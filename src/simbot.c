@@ -21,8 +21,38 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <GLFW/glfw3.h>
+
+static void error_callback(int, const char*);
 
 int main()
 {
     printf( "This is SimBot!\n" );
+
+    // Set error callback for glfw.
+    glfwSetErrorCallback(error_callback);
+
+    // Initialize glfw.
+    if( glfwInit() != GL_TRUE )
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    // Create main windows.
+    GLFWwindow *window = glfwCreateWindow(800, 600, "SimBot", NULL, NULL);
+
+    while(1)
+    {
+        __asm("pause");
+    }
+
+    // Terminate glfw.
+    glfwTerminate();
 }
+
+static void error_callback(int err_code, const char* description)
+{
+    fputs(description, stderr);
+}
+
