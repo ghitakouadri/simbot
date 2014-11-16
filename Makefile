@@ -23,8 +23,7 @@ OBJECTS = ${SOURCES:%.c=$(OBJ_DIR)/%.o}
 #*******************#
 
 # Default target.
-all : init build
-all : strip-exec
+all : init build strip-exec
 
 debug : CC += -ggdb
 debug : init build
