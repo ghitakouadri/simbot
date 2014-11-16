@@ -1,25 +1,48 @@
-CC=gcc
-CFLAGS=-Wall -std=c11
-LDFLAGS=-lglfw
-SOURCES=src/simbot.c
-EXECUTABLE=simbot
-OBJECTS=$(SOURCES:.c=.o)
+CC = clang
+CFLAGS = -I/usr/include -Wall -std=c11
+LDFLAGS = -L/usr/bin -lglfw
+SOURCES = simbot.c
+EXECUTABLE = simbot
+OBJ_DIR = bin
+OBJECTS = ${SOURCES:%.c=$(OBJ_DIR)/%.o}
 
-all : debug
+#*******************#
+#  Example targets  #
+#*******************#
 
-debug : CC+= -ggdb
-debug : $(SOURCES) $(EXECUTABLE)
+# // Describes how the executable is built.
+#$(EXECUTABLE) :
+#	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJECTS)
 
-release : $(SOURCES) $(EXECUTABLE)
+# // Describes how the object files are created.
+#$(OBJ_DIR)/%.o : %.c
+#	$(CC) $(CFLAGS) $< -o $@
 
-$(EXECUTABLE) : $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+#*******************#
+#  ~Example targets #
+#*******************#
 
-.cpp.o :
-	$(CC) $(CFLAGS) $< -o $@
+# Default target.
+all : init build
+all : strip-exec
 
-install-strip :
-	strip $(EXECUTABLE)
+debug : CC += -ggdb
+debug : init build
+
+build : $(OBJECTS) $(EXECUTABLE)
+
+$(EXECUTABLE) :
+	$(CC) $(LDFLAGS) -o $@ $(OBJECTS)
+
+# Build the src folder's sources.
+$(OBJ_DIR)/%.o : src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+init :
+	mkdir -p "$(OBJ_DIR)"
 
 clean :
-	rm -fr $(EXECUTABLE) *.o
+	rm -rf $(EXECUTABLE) $(OBJ_DIR)
+
+strip-exec :
+	strip $(EXECUTABLE)
