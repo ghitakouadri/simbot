@@ -1,6 +1,6 @@
 CC = clang
 CFLAGS = -I/usr/include -Wall -std=c11
-LDFLAGS = -L/usr/bin -lglfw
+LDFLAGS = -L/usr/bin -lglfw -lGL
 SOURCES = simbot.c
 EXECUTABLE = simbot
 OBJ_DIR = bin
