@@ -1,6 +1,6 @@
 CC = clang
 CFLAGS = -I/usr/include -Wall -std=c11
-LDFLAGS = -L/usr/bin -lglfw -lGL
+LDFLAGS = -L/usr/bin -lglfw -lGL -lm
 SOURCES = simbot.c
 EXECUTABLE = simbot
 OBJ_DIR = bin
@@ -23,10 +23,10 @@ OBJECTS = ${SOURCES:%.c=$(OBJ_DIR)/%.o}
 #*******************#
 
 # Default target.
-all : init build strip-exec
+all : clean init build strip-exec
 
 debug : CC += -ggdb
-debug : init build
+debug : clean init build
 
 build : $(OBJECTS) $(EXECUTABLE)
 
