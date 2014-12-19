@@ -1,10 +1,11 @@
 CC = clang
 CFLAGS = -I/usr/include -Wall -std=c11
 LDFLAGS = -L/usr/bin -lglfw -lGL -lm
-SOURCES = simbot.c
+SRC_DIR = src
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
 EXECUTABLE = simbot
 OBJ_DIR = bin
-OBJECTS = ${SOURCES:%.c=$(OBJ_DIR)/%.o}
+OBJECTS = ${SOURCES:$(SRC_DIR)%.c=$(OBJ_DIR)/%.o}
 
 #*******************#
 #  Example targets  #
