@@ -28,12 +28,11 @@
 #include <math.h>
 #include <assert.h>
 #include <float.h>
-#include <limits.h>
+
+#include "graphics.h"
 
 static void error_callback(int, const char*);
-static void render_triangle_el( double side_len );
 static void mouse_button_callback(GLFWwindow*, int, int, int);
-static long get_tri_height_from_side(long side);
 
 int main() {
     printf("This is SimBot!\n");
@@ -122,22 +121,29 @@ int main() {
         glEnd();
 
         // Draw axes' directions.
-        GLshort tri_side_px = 20;
-        GLshort tri_height_px = get_tri_height_from_side(tri_side_px);
-        GLshort tri_half_size_px = tri_side_px/2;
-        glBegin(GL_TRIANGLES);
-          glColor3f(0.0, 0.5, 0.0);
+        unsigned int tri_side_px = 20;
+        unsigned int half_tri_side_px = tri_side_px >> 1;
 
-          // y axis direction.
-          glVertex2s(0, half_y);
-          glVertex2s(-tri_half_size_px, half_y - tri_height_px);
-          glVertex2s(tri_half_size_px, half_y - tri_height_px);
+        struct vertices *vert = init_vertices(3);
+        vert->verts[0].x = 0;
+        vert->verts[0].y = half_y;
+        vert->verts[1].x = - half_tri_side_px;
+        vert->verts[1].y = vert->verts[2].y =
+            half_y - get_tri_height_from_side(tri_side_px);
 
-          // x axis direction.
-          glVertex2s(half_x, 0);
-          glVertex2s(half_x - tri_height_px, -tri_half_size_px);
-          glVertex2s(half_x - tri_height_px, tri_half_size_px);
-        glEnd();
+        vert->verts[2].x = half_tri_side_px;
+        draw_triangle(tri_side_px, vert);
+
+        vert->verts[0].x = half_x;
+        vert->verts[0].y = 0;
+        vert->verts[1].y = - half_tri_side_px;
+        vert->verts[1].x = vert->verts[2].x =
+            half_x - get_tri_height_from_side(tri_side_px);
+
+        vert->verts[2].y = half_tri_side_px;
+        draw_triangle(tri_side_px, vert);
+
+        free(vert);
 
         glFlush();
         glfwSwapBuffers(main_window);
@@ -160,32 +166,5 @@ static void mouse_button_callback(GLFWwindow *window, int button, int action,
                                   int mods) {
 
     printf("This is the mouse button callback\n");
-}
-
-// TODO: add doc.
-static void render_triangle_el( double side_len ) {
-}
-
-static long round_f_to_l(float x) {
-    x += 0.5;
-    assert(x >= LONG_MIN && x <= LONG_MAX && "Rounding overflow.\n");
-
-    return (long)x;
-}
-
-// TODO: add doc.
-static long get_tri_height_from_side(long side) {
-    assert(side > 0 && "The size of the side must be > 0.\n");
-
-    // For equilateral triangle:
-    // h^2 = side^2 - (size/2)^2
-    float h_square = pow(side, 2) - powf(round(side/2.0), 2);
-
-    float h = sqrtf(h_square);
-
-    assert(h >= LONG_MIN && h <= LONG_MAX &&
-            "Undefined float to integer conversion");
-
-    return (long)h;
 }
 
