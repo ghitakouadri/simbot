@@ -64,6 +64,7 @@ int main() {
     // Set mouse button callback.
     glfwSetMouseButtonCallback(main_window, mouse_button_callback);
 
+    unsigned int count = 0;
     while(1)
     {
 
@@ -148,8 +149,8 @@ int main() {
         glFlush();
         glfwSwapBuffers(main_window);
 
-        printf("Paint\n");
-        sleep(2);
+        printf("Paint %u\n", ++count);
+        glfwWaitEvents();
     }
 
     // Terminate glfw.
