@@ -31,10 +31,16 @@
 
 #include "graphics.h"
 
+static const unsigned int X_LENGTH = 800;
+static const unsigned int Y_LENGTH = 600;
+
 static void error_callback(int, const char*);
+static void draw_cartesian_axes(GLdouble half_x, GLdouble half_y);
+static void draw_axes_directions(GLdouble half_x, GLdouble half_y);
 static void mouse_button_callback(GLFWwindow*, int, int, int);
 
 int main() {
+
     printf("This is SimBot!\n");
 
     // Set error callback for glfw.
@@ -47,7 +53,9 @@ int main() {
     }
 
     // Create main windows.
-    GLFWwindow *main_window = glfwCreateWindow(800, 600, "SimBot", NULL, NULL);
+    GLFWwindow *main_window = glfwCreateWindow(X_LENGTH, Y_LENGTH,
+            "SimBot", NULL, NULL);
+
     if(!main_window)
     {
         glfwTerminate();
@@ -108,43 +116,9 @@ int main() {
         // Reset all transformations.
         glLoadIdentity();
 
-        // Draw cartesian axes.
-        glBegin(GL_LINES);
-          glColor3f(1.0, 0.0, 0.0);
+        draw_cartesian_axes(half_x, half_y);
 
-          // x axis.
-          glVertex2s(-half_x, 0);
-          glVertex2s(half_x, 0);
-
-          // y axis.
-          glVertex2s(0, -half_y);
-          glVertex2s(0, half_y);
-        glEnd();
-
-        // Draw axes' directions.
-        unsigned int tri_side_px = 20;
-        unsigned int half_tri_side_px = tri_side_px >> 1;
-
-        struct vertices *vert = init_vertices(3);
-        vert->verts[0].x = 0;
-        vert->verts[0].y = half_y;
-        vert->verts[1].x = - half_tri_side_px;
-        vert->verts[1].y = vert->verts[2].y =
-            half_y - get_tri_height_from_side(tri_side_px);
-
-        vert->verts[2].x = half_tri_side_px;
-        draw_triangle(tri_side_px, vert);
-
-        vert->verts[0].x = half_x;
-        vert->verts[0].y = 0;
-        vert->verts[1].y = - half_tri_side_px;
-        vert->verts[1].x = vert->verts[2].x =
-            half_x - get_tri_height_from_side(tri_side_px);
-
-        vert->verts[2].y = half_tri_side_px;
-        draw_triangle(tri_side_px, vert);
-
-        free(vert);
+        draw_axes_directions(half_x, half_y);
 
         glFlush();
         glfwSwapBuffers(main_window);
@@ -155,6 +129,50 @@ int main() {
 
     // Terminate glfw.
     glfwTerminate();
+}
+
+static void draw_cartesian_axes(GLdouble half_x, GLdouble half_y) {
+
+    // Draw cartesian axes.
+    glBegin(GL_LINES);
+      glColor3f(1.0, 0.0, 0.0);
+
+      // x axis.
+      glVertex2s(-half_x, 0);
+      glVertex2s(half_x, 0);
+
+      // y axis.
+      glVertex2s(0, -half_y);
+      glVertex2s(0, half_y);
+    glEnd();
+}
+
+static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
+
+    // Draw axes' directions.
+    unsigned int tri_side_px = 20;
+    unsigned int half_tri_side_px = tri_side_px >> 1;
+
+    struct vertices *vert = init_vertices(3);
+    vert->verts[0].x = 0;
+    vert->verts[0].y = half_y;
+    vert->verts[1].x = - half_tri_side_px;
+    vert->verts[1].y = vert->verts[2].y =
+        half_y - get_tri_height_from_side(tri_side_px);
+
+    vert->verts[2].x = half_tri_side_px;
+    draw_triangle(tri_side_px, vert);
+
+    vert->verts[0].x = half_x;
+    vert->verts[0].y = 0;
+    vert->verts[1].y = - half_tri_side_px;
+    vert->verts[1].x = vert->verts[2].x =
+        half_x - get_tri_height_from_side(tri_side_px);
+
+    vert->verts[2].y = half_tri_side_px;
+    draw_triangle(tri_side_px, vert);
+
+    free(vert);
 }
 
 // TODO: add doc.
