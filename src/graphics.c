@@ -22,6 +22,17 @@ void draw_triangle(unsigned int side_px, struct vertices *vert) {
     glEnd();
 }
 
+void draw_line(struct vertices *vert) {
+
+    assert(vert->vert_count == 2 && "There should be 2 vertices.\n");
+
+    glBegin(GL_LINES);
+      glColor3f(1.0, 0.0, 0.0);
+      glVertex2s(vert->verts[0].x, vert->verts[0].y);
+      glVertex2s(vert->verts[1].x, vert->verts[1].y);
+    glEnd();
+}
+
 // TODO: add doc.
 unsigned int get_tri_height_from_side(unsigned int side) {
     assert(side > 0 && "The size of the side must be > 0.\n");

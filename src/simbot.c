@@ -133,23 +133,27 @@ int main() {
 
 static void draw_cartesian_axes(GLdouble half_x, GLdouble half_y) {
 
-    // Draw cartesian axes.
-    glBegin(GL_LINES);
-      glColor3f(1.0, 0.0, 0.0);
+    struct vertices *vert = init_vertices(2);
 
-      // x axis.
-      glVertex2s(-half_x, 0);
-      glVertex2s(half_x, 0);
+    // x axis.
+    vert->verts[0].x = -half_x;
+    vert->verts[0].y = 0;
+    vert->verts[1].x = half_x;
+    vert->verts[1].y = 0;
+    draw_line(vert);
 
-      // y axis.
-      glVertex2s(0, -half_y);
-      glVertex2s(0, half_y);
-    glEnd();
+    // y axis.
+    vert->verts[0].x = 0;
+    vert->verts[0].y = -half_y;
+    vert->verts[1].x = 0;
+    vert->verts[1].y = half_y;
+    draw_line(vert);
+
+    free(vert);
 }
 
 static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
 
-    // Draw axes' directions.
     unsigned int tri_side_px = 20;
     unsigned int half_tri_side_px = tri_side_px >> 1;
 
