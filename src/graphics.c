@@ -8,7 +8,7 @@
 
 static long round_f_to_l(float x);
 
-void draw_triangle(unsigned int side_px, struct vertices *vert) {
+void draw_triangle(struct vertices *vert) {
 
     assert(vert->vert_count == 3 && "There should be 3 vertices.\n");
 

@@ -154,18 +154,19 @@ static void draw_cartesian_axes(GLdouble half_x, GLdouble half_y) {
 
 static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
 
-    unsigned int tri_side_px = 20;
-    unsigned int half_tri_side_px = tri_side_px >> 1;
+    int tri_side_px = 20;
+    int half_tri_side_px = tri_side_px /2;
 
     struct vertices *vert = init_vertices(3);
     vert->verts[0].x = 0;
     vert->verts[0].y = half_y;
+
     vert->verts[1].x = - half_tri_side_px;
     vert->verts[1].y = vert->verts[2].y =
         half_y - get_tri_height_from_side(tri_side_px);
 
     vert->verts[2].x = half_tri_side_px;
-    draw_triangle(tri_side_px, vert);
+    draw_triangle(vert);
 
     vert->verts[0].x = half_x;
     vert->verts[0].y = 0;
@@ -174,7 +175,7 @@ static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
         half_x - get_tri_height_from_side(tri_side_px);
 
     vert->verts[2].y = half_tri_side_px;
-    draw_triangle(tri_side_px, vert);
+    draw_triangle(vert);
 
     free(vert);
 }
