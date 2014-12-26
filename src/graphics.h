@@ -15,7 +15,7 @@ struct color {
 };
 
 struct vertices {
-    unsigned int vert_count;
+    unsigned long vert_count;
     struct vertex verts[];
 };
 

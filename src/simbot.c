@@ -31,6 +31,8 @@
 
 #include "graphics.h"
 
+#define UNUSED(x) (void)x
+
 static const unsigned int X_LENGTH = 800;
 static const unsigned int Y_LENGTH = 600;
 
@@ -74,7 +76,7 @@ int main() {
     glfwSetMouseButtonCallback(main_window, mouse_button_callback);
 
     unsigned int count = 0;
-    while(1)
+    while(glfwWindowShouldClose(main_window) == GL_FALSE)
     {
 
         // The viewport maps the clipping area to an area of the window.
@@ -167,14 +169,14 @@ static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
     col.g = 0.5;
     col.b = 0.0;
 
-    int tri_side_px = 20;
-    int half_tri_side_px = tri_side_px /2;
+    unsigned int tri_side_px = 20;
+    unsigned int half_tri_side_px = tri_side_px /2;
 
     struct vertices *vert = init_vertices(3);
     vert->verts[0].x = 0;
     vert->verts[0].y = half_y;
 
-    vert->verts[1].x = - half_tri_side_px;
+    vert->verts[1].x = - (GLdouble)half_tri_side_px;
     vert->verts[1].y = vert->verts[2].y =
         half_y - get_tri_height_from_side(tri_side_px);
 
@@ -183,7 +185,7 @@ static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
 
     vert->verts[0].x = half_x;
     vert->verts[0].y = 0;
-    vert->verts[1].y = - half_tri_side_px;
+    vert->verts[1].y = - (GLdouble)half_tri_side_px;
     vert->verts[1].x = vert->verts[2].x =
         half_x - get_tri_height_from_side(tri_side_px);
 
@@ -246,6 +248,8 @@ static void draw_robot() {
 
 // TODO: add doc.
 static void error_callback(int err_code, const char* description) {
+
+    UNUSED(err_code);
     fputs(description, stderr);
 }
 
@@ -253,6 +257,10 @@ static void error_callback(int err_code, const char* description) {
 static void mouse_button_callback(GLFWwindow *window, int button, int action,
                                   int mods) {
 
+    UNUSED(window);
+    UNUSED(button);
+    UNUSED(action);
+    UNUSED(mods);
     printf("This is the mouse button callback\n");
 }
 
