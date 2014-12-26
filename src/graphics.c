@@ -8,12 +8,13 @@
 
 static long round_f_to_l(float x);
 
-void draw_triangle(struct vertices *vert) {
+// TODO: add doc.
+void draw_triangle(struct vertices *vert, struct color *col) {
 
     assert(vert->vert_count == 3 && "There should be 3 vertices.\n");
 
     glBegin(GL_TRIANGLES);
-      glColor3f(0.0, 0.5, 0.0);
+      glColor3d(col->r, col->g, col->b);
 
       glVertex2s(vert->verts[0].x, vert->verts[0].y);
       glVertex2s(vert->verts[1].x, vert->verts[1].y);
@@ -22,14 +23,29 @@ void draw_triangle(struct vertices *vert) {
     glEnd();
 }
 
-void draw_line(struct vertices *vert) {
+// TODO: add doc.
+void draw_line(struct vertices *vert, struct color *col) {
 
     assert(vert->vert_count == 2 && "There should be 2 vertices.\n");
 
     glBegin(GL_LINES);
-      glColor3f(1.0, 0.0, 0.0);
+      glColor3d(col->r, col->g, col->b);
       glVertex2s(vert->verts[0].x, vert->verts[0].y);
       glVertex2s(vert->verts[1].x, vert->verts[1].y);
+    glEnd();
+}
+
+// TODO: add doc.
+void draw_quadrilateral(struct vertices *vert, struct color *col) {
+
+    assert(vert->vert_count == 4 && "There should be 4 vertices.\n");
+
+    glBegin(GL_QUADS);
+      glColor3d(col->r, col->g, col->b);
+      glVertex2s(vert->verts[0].x, vert->verts[0].y);
+      glVertex2s(vert->verts[1].x, vert->verts[1].y);
+      glVertex2s(vert->verts[2].x, vert->verts[2].y);
+      glVertex2s(vert->verts[3].x, vert->verts[3].y);
     glEnd();
 }
 
