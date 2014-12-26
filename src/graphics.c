@@ -15,9 +15,9 @@ void draw_triangle(struct vertices *vert) {
     glBegin(GL_TRIANGLES);
       glColor3f(0.0, 0.5, 0.0);
 
-      glVertex2s(vert->verts[0].x, vert->verts[0].y);
-      glVertex2s(vert->verts[1].x, vert->verts[1].y);
-      glVertex2s(vert->verts[2].x, vert->verts[2].y);
+      glVertex2d(vert->verts[0].x, vert->verts[0].y);
+      glVertex2d(vert->verts[1].x, vert->verts[1].y);
+      glVertex2d(vert->verts[2].x, vert->verts[2].y);
 
     glEnd();
 }
@@ -28,8 +28,8 @@ void draw_line(struct vertices *vert) {
 
     glBegin(GL_LINES);
       glColor3f(1.0, 0.0, 0.0);
-      glVertex2s(vert->verts[0].x, vert->verts[0].y);
-      glVertex2s(vert->verts[1].x, vert->verts[1].y);
+      glVertex2d(vert->verts[0].x, vert->verts[0].y);
+      glVertex2d(vert->verts[1].x, vert->verts[1].y);
     glEnd();
 }
 
@@ -39,7 +39,7 @@ unsigned int get_tri_height_from_side(unsigned int side) {
 
     // For equilateral triangle:
     // h^2 = side^2 - (size/2)^2
-    float h_square = pow(side, 2) - powf(round_f_to_l(side/2.0), 2);
+    float h_square = powf(side, 2) - powf(round_f_to_l(side/2.0f), 2);
 
     float h = sqrtf(h_square);
 
