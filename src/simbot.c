@@ -1,6 +1,6 @@
 /*
     simbot is a simulator of a 2 wheels differential drive robot.
-    Copyright (C) 2014 Roberto Cometti <modsrm@gmail.com>
+    Copyright (C) 2014 Roberto Cometti <modsrm@pagefault.io>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include <float.h>
 
 #include "graphics.h"
+#include "robot.h"
 
 #define UNUSED(x) (void)x
 
@@ -40,7 +41,6 @@ static void error_callback(int, const char*);
 static void draw_cartesian_axes(GLdouble half_x, GLdouble half_y);
 static void draw_axes_directions(GLdouble half_x, GLdouble half_y);
 static void mouse_button_callback(GLFWwindow*, int, int, int);
-static void draw_robot();
 
 int main() {
 
@@ -123,7 +123,10 @@ int main() {
 
         draw_axes_directions(half_x, half_y);
 
-        draw_robot();
+        struct robot rob;
+        rob.pos.x = 0;
+        rob.pos.y = 0;
+        robot_draw(&rob);
 
         glFlush();
         glfwSwapBuffers(main_window);
@@ -194,57 +197,6 @@ static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
 
     free(vert);
 }
-
-static void draw_robot() {
-
-    struct color col;
-    struct vertices *vert_quad = init_vertices(4);
-
-    // Wheels 30x8
-    col.r = 0.0;
-    col.g = 0.0;
-    col.b = 0.0;
-
-    vert_quad->verts[0].x = -15;
-    vert_quad->verts[0].y = -8;
-    vert_quad->verts[1].x = -15;
-    vert_quad->verts[1].y = 0;
-    vert_quad->verts[2].x = 15;
-    vert_quad->verts[2].y = 0;
-    vert_quad->verts[3].x = 15;
-    vert_quad->verts[3].y = -8;
-    draw_quadrilateral(vert_quad, &col);
-
-    // Body 20x30 px
-    col.r = 1.0;
-    col.g = 0.0;
-    col.b = 0.0;
-
-    vert_quad->verts[0].x = -10;
-    vert_quad->verts[0].y = -15;
-    vert_quad->verts[1].x = -10;
-    vert_quad->verts[1].y = 15;
-    vert_quad->verts[2].x = 10;
-    vert_quad->verts[2].y = 15;
-    vert_quad->verts[3].x = 10;
-    vert_quad->verts[3].y = -15;
-    draw_quadrilateral(vert_quad, &col);
-
-    struct vertices *vert_tri = init_vertices(3);
-
-    // Bumper
-    vert_tri->verts[0].x = -5;
-    vert_tri->verts[0].y = 15;
-    vert_tri->verts[1].x = 0;
-    vert_tri->verts[1].y = 25;
-    vert_tri->verts[2].x = 5;
-    vert_tri->verts[2].y = 15;
-    draw_triangle(vert_tri, &col);
-
-    free(vert_quad);
-    free(vert_tri);
-
-    }
 
 // TODO: add doc.
 static void error_callback(int err_code, const char* description) {
