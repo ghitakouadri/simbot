@@ -37,10 +37,10 @@ void robot_draw(struct robot *rob) {
 
     vert_tri->verts[0].x = rob->pos.x;
     vert_tri->verts[0].y = rob->pos.y;
-    vert_tri->verts[1].x = rob->pos.x + robot_length / 2;
-    vert_tri->verts[1].y = -10;
-    vert_tri->verts[2].x = rob->pos.x - robot_length / 2;
-    vert_tri->verts[2].y =  -10;
+    vert_tri->verts[1].x = vert_tri->verts[0].x + robot_length / 2;
+    vert_tri->verts[1].y = vert_tri->verts[0].x -10;
+    vert_tri->verts[2].x = vert_tri->verts[0].x - robot_length / 2;
+    vert_tri->verts[2].y = vert_tri->verts[1].y;
 
     struct vertices *vert_body= init_vertices(4);
 
