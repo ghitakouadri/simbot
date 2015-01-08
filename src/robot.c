@@ -45,8 +45,6 @@ void robot_draw(struct robot *rob) {
     struct vertices *vert_body= init_vertices(4);
 
     // Body 20x30 px
-
-
     vert_body->verts[0].x = vert_tri->verts[2].x;
     vert_body->verts[0].y = vert_tri->verts[2].y;
     vert_body->verts[1].x = vert_tri->verts[1].x;
@@ -56,7 +54,8 @@ void robot_draw(struct robot *rob) {
     vert_body->verts[3].x = vert_body->verts[0].x;
     vert_body->verts[3].y = vert_body->verts[0].y - robot_height;
 
-    // Wheels 30x8
+    // Wheels 30x8 px
+    // TODO: add dimension constants.
     struct vertices *vert_wheels = init_vertices(4);
 
     vert_wheels->verts[0].x = vert_body->verts[3].x - 5;
