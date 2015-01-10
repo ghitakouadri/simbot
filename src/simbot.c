@@ -113,7 +113,7 @@ int main() {
 
         // Set the current matrix to the model view. The modelview matrix
         // defines how the objects in the buffer are transformed (rotated,
-        // translates, scaled).
+        // translated, scaled).
         glMatrixMode(GL_MODELVIEW);
 
         // Reset all transformations.
@@ -123,10 +123,7 @@ int main() {
 
         draw_axes_directions(half_x, half_y);
 
-        struct robot rob;
-        rob.pos.x = 0;
-        rob.pos.y = 0;
-        robot_draw(&rob);
+        robot_draw();
 
         glFlush();
         glfwSwapBuffers(main_window);

@@ -32,7 +32,10 @@ struct robot {
     struct vertex prev_pos;
 };
 
-void robot_draw(struct robot *rob);
+/**
+ * Draws robot at the origin.
+ */
+void robot_draw(void);
 
 #endif // ~ROBOT_H
 

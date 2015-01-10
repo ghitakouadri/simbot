@@ -24,62 +24,80 @@
 
 #include "robot.h"
 
-void robot_draw(struct robot *rob) {
+// TODO: remove magic numbers.
+static void draw_bumper() {
+
+    struct vertices *vert_bumper= init_vertices(3);
+
+    vert_bumper->verts[0].x = 0;
+    // Half robot height + tri height
+    vert_bumper->verts[0].y = 10 + 10;
+    vert_bumper->verts[1].x = 10;
+    // Robot height
+    vert_bumper->verts[1].y = 15;
+    vert_bumper->verts[2].x = -10;
+    vert_bumper->verts[2].y = 15;
 
     struct color col;
-
-    // TODO: move in struct.
-    const GLdouble robot_length = 20;
-    const GLdouble robot_height = 30;
-
-    // Bumper
-    struct vertices *vert_tri = init_vertices(3);
-
-    vert_tri->verts[0].x = rob->pos.x;
-    vert_tri->verts[0].y = rob->pos.y;
-    vert_tri->verts[1].x = vert_tri->verts[0].x + robot_length / 2;
-    vert_tri->verts[1].y = vert_tri->verts[0].x -10;
-    vert_tri->verts[2].x = vert_tri->verts[0].x - robot_length / 2;
-    vert_tri->verts[2].y = vert_tri->verts[1].y;
-
-    struct vertices *vert_body= init_vertices(4);
-
-    // Body 20x30 px
-    vert_body->verts[0].x = vert_tri->verts[2].x;
-    vert_body->verts[0].y = vert_tri->verts[2].y;
-    vert_body->verts[1].x = vert_tri->verts[1].x;
-    vert_body->verts[1].y = vert_tri->verts[1].y;
-    vert_body->verts[2].x = vert_body->verts[1].x;
-    vert_body->verts[2].y = vert_body->verts[1].y - robot_height;
-    vert_body->verts[3].x = vert_body->verts[0].x;
-    vert_body->verts[3].y = vert_body->verts[0].y - robot_height;
-
-    // Wheels 30x8 px
-    // TODO: add dimension constants.
-    struct vertices *vert_wheels = init_vertices(4);
-
-    vert_wheels->verts[0].x = vert_body->verts[3].x - 5;
-    vert_wheels->verts[0].y = vert_body->verts[3].y + 10;
-    vert_wheels->verts[1].x = vert_body->verts[2].x + 5;
-    vert_wheels->verts[1].y = vert_body->verts[2].y + 10;
-    vert_wheels->verts[2].x = vert_wheels->verts[1].x;
-    vert_wheels->verts[2].y = vert_wheels->verts[1].y - 8;
-    vert_wheels->verts[3].x = vert_wheels->verts[0].x;
-    vert_wheels->verts[3].y = vert_wheels->verts[0].y -8;
-
     col.r = 0.0;
     col.g = 0.0;
     col.b = 0.0;
-    draw_triangle(vert_tri, &col);
-    draw_quadrilateral(vert_wheels, &col);
+    draw_triangle(vert_bumper, &col);
 
+    free(vert_bumper);
+}
+
+static void draw_body() {
+
+    struct vertices *vert_body= init_vertices(4);
+
+    vert_body->verts[0].x = -10;
+    vert_body->verts[0].y = 15;
+    vert_body->verts[1].x = 10;
+    vert_body->verts[1].y = 15;
+    vert_body->verts[2].x = 10;
+    vert_body->verts[2].y = -15;
+    vert_body->verts[3].x = -10;
+    vert_body->verts[3].y = -15;
+
+    struct color col;
     col.r = 1.0;
     col.g = 0.0;
     col.b = 0.0;
+
     draw_quadrilateral(vert_body, &col);
 
     free(vert_body);
+}
+
+static void draw_wheels() {
+
+    struct vertices *vert_wheels = init_vertices(4);
+
+    vert_wheels->verts[0].x = -10 - 5;
+    vert_wheels->verts[0].y = -15 + 10;
+    vert_wheels->verts[1].x = 10 + 5;
+    vert_wheels->verts[1].y = -15 + 10;
+    vert_wheels->verts[2].x = 10 + 5;
+    vert_wheels->verts[2].y = -15 + 10 - 8;
+    vert_wheels->verts[3].x = -10 - 5;
+    vert_wheels->verts[3].y = -15 + 10 - 8;
+
+    struct color col;
+    col.r = 0.0;
+    col.g = 0.0;
+    col.b = 0.0;
+
+    draw_quadrilateral(vert_wheels, &col);
+
     free(vert_wheels);
-    free(vert_tri);
+}
+
+// Draw robot at origin.
+void robot_draw() {
+
+    draw_bumper();
+    draw_wheels();
+    draw_body();
 }
 
