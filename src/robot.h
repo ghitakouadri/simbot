@@ -28,14 +28,14 @@
 #include "graphics.h"
 
 struct robot {
-    struct vertex pos;
-    struct vertex prev_pos;
+    const int length;
+    const int height;
 };
 
 /**
  * Draws robot at the origin.
  */
-void robot_draw(void);
+void draw_robot(void);
 
 #endif // ~ROBOT_H
 

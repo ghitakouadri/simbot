@@ -94,7 +94,7 @@ static void draw_wheels() {
 }
 
 // Draw robot at origin.
-void robot_draw() {
+void draw_robot() {
 
     draw_bumper();
     draw_wheels();

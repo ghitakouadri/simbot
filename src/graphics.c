@@ -71,6 +71,70 @@ void draw_quadrilateral(struct vertices *vert, struct color *col) {
     glEnd();
 }
 
+static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
+
+    struct color col;
+    col.r = 0.0;
+    col.g = 0.5;
+    col.b = 0.0;
+
+    unsigned int tri_side_px = 20;
+    unsigned int half_tri_side_px = tri_side_px /2;
+
+    struct vertices *vert = init_vertices(3);
+    vert->verts[0].x = 0;
+    vert->verts[0].y = half_y;
+
+    vert->verts[1].x = - (GLdouble)half_tri_side_px;
+    vert->verts[1].y = vert->verts[2].y =
+        half_y - get_tri_height_from_side(tri_side_px);
+
+    vert->verts[2].x = half_tri_side_px;
+    draw_triangle(vert, &col);
+
+    vert->verts[0].x = half_x;
+    vert->verts[0].y = 0;
+    vert->verts[1].y = - (GLdouble)half_tri_side_px;
+    vert->verts[1].x = vert->verts[2].x =
+        half_x - get_tri_height_from_side(tri_side_px);
+
+    vert->verts[2].y = half_tri_side_px;
+    draw_triangle(vert, &col);
+
+    free(vert);
+}
+
+void draw_2d_cartesian_plane(double plane_length, double plane_height) {
+
+    GLdouble half_x = plane_length / 2;
+    GLdouble half_y = plane_height / 2;
+
+    struct color col;
+    col.r = 0.0;
+    col.g = 0.0;
+    col.b = 0.5;
+
+    struct vertices *vert = init_vertices(2);
+
+    // x axis.
+    vert->verts[0].x = -half_x;
+    vert->verts[0].y = 0;
+    vert->verts[1].x = half_x;
+    vert->verts[1].y = 0;
+    draw_line(vert, &col);
+
+    // y axis.
+    vert->verts[0].x = 0;
+    vert->verts[0].y = -half_y;
+    vert->verts[1].x = 0;
+    vert->verts[1].y = half_y;
+    draw_line(vert, &col);
+
+    free(vert);
+
+    draw_axes_directions(half_x, half_y);
+}
+
 // TODO: add doc.
 unsigned int get_tri_height_from_side(unsigned int side) {
     assert(side > 0 && "The size of the side must be > 0.\n");
