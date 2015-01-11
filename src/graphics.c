@@ -1,6 +1,6 @@
 /*
     simbot is a simulator of a 2 wheels differential drive robot.
-    Copyright (C) 2014 Roberto Cometti <modsrm@pagefault.io>
+    Copyright (C) 2014-2015 Roberto Cometti <modsrm@pagefault.io>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

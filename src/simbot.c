@@ -1,6 +1,6 @@
 /*
     simbot is a simulator of a 2 wheels differential drive robot.
-    Copyright (C) 2014 Roberto Cometti <modsrm@pagefault.io>
+    Copyright (C) 2014-2015 Roberto Cometti <modsrm@pagefault.io>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,11 +35,16 @@
 
 #define UNUSED(x) (void)x
 
-struct simbot {
+static struct vertex cursor_position = {0.0, 0.0};
+
+static struct simbot {
+
     const int window_length;
     const int window_height;
     struct robot simbot_robot;
-} ;
+    struct vertex destination;
+
+} simbot_prog = {800, 800, {40, 20}, {0.0, 0.0}};
 
 // TODO: add doc.
 static void error_callback(int err_code, const char* description) {
@@ -48,35 +53,65 @@ static void error_callback(int err_code, const char* description) {
     fputs(description, stderr);
 }
 
+static void window_to_cartesian_coord(double *x, double *y) {
+
+    *x = *x - simbot_prog.window_length / 2;
+
+    // The y coordinate is flipped because the window y coordinate grows towards
+    // decreasing cartesian y values.
+    *y = -(*y - simbot_prog.window_height / 2);
+}
+
+static void mouse_position_callback(GLFWwindow *window, double x, double y) {
+
+    UNUSED(window);
+    cursor_position.x = x;
+    cursor_position.y = y;
+}
+
+static void set_simbot_destination() {
+
+    double x = cursor_position.x;
+    double y = cursor_position.y;
+
+    window_to_cartesian_coord(&x, &y);
+
+    simbot_prog.destination.x = x;
+    simbot_prog.destination.y = y;
+
+    printf("Recorded destination: x=%f y=%f\n",
+           simbot_prog.destination.x, simbot_prog.destination.y );
+}
+
 // TODO: add doc.
 static void mouse_button_callback(GLFWwindow *window, int button, int action,
                                   int mods) {
 
     UNUSED(window);
     UNUSED(button);
-    UNUSED(action);
     UNUSED(mods);
-    printf("This is the mouse button callback\n");
+
+    if(action == GLFW_PRESS)
+    {
+        set_simbot_destination();
+    }
 }
 
 static void set_callbacks(GLFWwindow *window) {
 
-    // Set error callback for glfw.
     glfwSetErrorCallback(error_callback);
-
     glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetCursorPosCallback(window, mouse_position_callback);
 
 }
 
 static GLFWwindow* init_window(const int window_length, const int window_height) {
 
-    // Initialize glfw.
     if(glfwInit() != GL_TRUE)
     {
         exit(EXIT_FAILURE);
     }
 
-    // Create main windows.
     GLFWwindow *main_window = glfwCreateWindow(window_length, window_height,
                                                "SimBot", NULL, NULL);
 
@@ -156,8 +191,6 @@ int main() {
 
     printf("This is SimBot!\n");
 
-    struct simbot simbot_prog = {800, 800, {40, 20}};
-
     GLFWwindow *main_window = init_window(simbot_prog.window_length,
                                           simbot_prog.window_height);
     while(is_window_open(main_window))
@@ -173,7 +206,6 @@ int main() {
         glfwWaitEvents();
     }
 
-    // Terminate glfw.
     glfwTerminate();
 }
 
