@@ -71,6 +71,22 @@ void draw_quadrilateral(struct vertices *vert, struct color *col) {
     glEnd();
 }
 
+// TODO: add doc.
+static unsigned int get_tri_eq_height_from_side(unsigned int side) {
+    assert(side > 0 && "The size of the side must be > 0.\n");
+
+    // For equilateral triangle:
+    // h^2 = side^2 - (size/2)^2
+    float h_square = powf(side, 2) - powf(round_f_to_l(side/2.0f), 2);
+
+    float h = sqrtf(h_square);
+
+    assert(h >= INT_MIN && h <= INT_MAX &&
+            "Undefined float to integer conversion");
+
+    return (unsigned int)h;
+}
+
 static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
 
     struct color col;
@@ -87,7 +103,7 @@ static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
 
     vert->verts[1].x = - (GLdouble)half_tri_side_px;
     vert->verts[1].y = vert->verts[2].y =
-        half_y - get_tri_height_from_side(tri_side_px);
+        half_y - get_tri_eq_height_from_side(tri_side_px);
 
     vert->verts[2].x = half_tri_side_px;
     draw_triangle(vert, &col);
@@ -96,7 +112,7 @@ static void draw_axes_directions(GLdouble half_x, GLdouble half_y) {
     vert->verts[0].y = 0;
     vert->verts[1].y = - (GLdouble)half_tri_side_px;
     vert->verts[1].x = vert->verts[2].x =
-        half_x - get_tri_height_from_side(tri_side_px);
+        half_x - get_tri_eq_height_from_side(tri_side_px);
 
     vert->verts[2].y = half_tri_side_px;
     draw_triangle(vert, &col);
@@ -114,41 +130,25 @@ void draw_2d_cartesian_plane(double plane_length, double plane_height) {
     col.g = 0.0;
     col.b = 0.5;
 
-    struct vertices *vert = init_vertices(2);
+    struct vertices *line_vert = init_vertices(2);
 
     // x axis.
-    vert->verts[0].x = -half_x;
-    vert->verts[0].y = 0;
-    vert->verts[1].x = half_x;
-    vert->verts[1].y = 0;
-    draw_line(vert, &col);
+    line_vert->verts[0].x = -half_x;
+    line_vert->verts[0].y = 0;
+    line_vert->verts[1].x = half_x;
+    line_vert->verts[1].y = 0;
+    draw_line(line_vert, &col);
 
     // y axis.
-    vert->verts[0].x = 0;
-    vert->verts[0].y = -half_y;
-    vert->verts[1].x = 0;
-    vert->verts[1].y = half_y;
-    draw_line(vert, &col);
+    line_vert->verts[0].x = 0;
+    line_vert->verts[0].y = -half_y;
+    line_vert->verts[1].x = 0;
+    line_vert->verts[1].y = half_y;
+    draw_line(line_vert, &col);
 
-    free(vert);
+    free(line_vert);
 
     draw_axes_directions(half_x, half_y);
-}
-
-// TODO: add doc.
-unsigned int get_tri_height_from_side(unsigned int side) {
-    assert(side > 0 && "The size of the side must be > 0.\n");
-
-    // For equilateral triangle:
-    // h^2 = side^2 - (size/2)^2
-    float h_square = powf(side, 2) - powf(round_f_to_l(side/2.0f), 2);
-
-    float h = sqrtf(h_square);
-
-    assert(h >= INT_MIN && h <= INT_MAX &&
-            "Undefined float to integer conversion");
-
-    return (unsigned int)h;
 }
 
 // TODO: add doc.

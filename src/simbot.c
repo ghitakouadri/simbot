@@ -171,7 +171,6 @@ int main() {
 
         finalize_draw_window(main_window);
         glfwWaitEvents();
-
     }
 
     // Terminate glfw.
