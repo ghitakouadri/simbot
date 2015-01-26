@@ -24,19 +24,23 @@
 
 #include "robot.h"
 
-// TODO: remove magic numbers.
+static const GLdouble BODY_LENGTH = 30;
+static const GLdouble BODY_WIDTH = 20;
+static const GLdouble BUMPER_HEIGHT = 10;
+static const GLdouble WHEEL_BODY_OFFSET = 5;
+static const GLdouble WHEEL_WIDTH = 4;
+static const GLdouble WHEEL_LENGTH = 6;
+
 static void draw_bumper() {
 
-    struct vertices *vert_bumper= init_vertices(3);
+    struct vertices *vert_bumper = init_vertices(3);
 
-    vert_bumper->verts[0].x = 0;
-    // Half robot height + tri height
-    vert_bumper->verts[0].y = 10 + 10;
-    vert_bumper->verts[1].x = 10;
-    // Robot height
-    vert_bumper->verts[1].y = 15;
-    vert_bumper->verts[2].x = -10;
-    vert_bumper->verts[2].y = 15;
+    vert_bumper->verts[0].x = BODY_LENGTH / 2;
+    vert_bumper->verts[0].y = BODY_WIDTH / 2;
+    vert_bumper->verts[1].x = BODY_LENGTH / 2 + BUMPER_HEIGHT;
+    vert_bumper->verts[1].y = 0;
+    vert_bumper->verts[2].x = BODY_LENGTH / 2;
+    vert_bumper->verts[2].y = - BODY_WIDTH / 2;
 
     struct color col;
     col.r = 0.0;
@@ -51,14 +55,14 @@ static void draw_body() {
 
     struct vertices *vert_body= init_vertices(4);
 
-    vert_body->verts[0].x = -10;
-    vert_body->verts[0].y = 15;
-    vert_body->verts[1].x = 10;
-    vert_body->verts[1].y = 15;
-    vert_body->verts[2].x = 10;
-    vert_body->verts[2].y = -15;
-    vert_body->verts[3].x = -10;
-    vert_body->verts[3].y = -15;
+    vert_body->verts[0].x = - BODY_LENGTH / 2;
+    vert_body->verts[0].y = BODY_WIDTH / 2;
+    vert_body->verts[1].x = BODY_LENGTH / 2;
+    vert_body->verts[1].y = BODY_WIDTH / 2;
+    vert_body->verts[2].x = BODY_LENGTH / 2;
+    vert_body->verts[2].y = - BODY_WIDTH / 2;
+    vert_body->verts[3].x = - BODY_LENGTH / 2;
+    vert_body->verts[3].y = - BODY_WIDTH / 2;
 
     struct color col;
     col.r = 1.0;
@@ -74,14 +78,14 @@ static void draw_wheels() {
 
     struct vertices *vert_wheels = init_vertices(4);
 
-    vert_wheels->verts[0].x = -10 - 5;
-    vert_wheels->verts[0].y = -15 + 10;
-    vert_wheels->verts[1].x = 10 + 5;
-    vert_wheels->verts[1].y = -15 + 10;
-    vert_wheels->verts[2].x = 10 + 5;
-    vert_wheels->verts[2].y = -15 + 10 - 8;
-    vert_wheels->verts[3].x = -10 - 5;
-    vert_wheels->verts[3].y = -15 + 10 - 8;
+    vert_wheels->verts[0].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET;
+    vert_wheels->verts[0].y = BODY_WIDTH / 2 + WHEEL_WIDTH;
+    vert_wheels->verts[1].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET + WHEEL_LENGTH;
+    vert_wheels->verts[1].y = BODY_WIDTH / 2 + WHEEL_WIDTH;
+    vert_wheels->verts[2].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET + WHEEL_LENGTH;
+    vert_wheels->verts[2].y = - BODY_WIDTH / 2 - WHEEL_WIDTH;
+    vert_wheels->verts[3].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET;
+    vert_wheels->verts[3].y = - BODY_WIDTH / 2 - WHEEL_WIDTH;
 
     struct color col;
     col.r = 0.0;
