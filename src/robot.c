@@ -24,77 +24,91 @@
 
 #include "robot.h"
 
-static const GLdouble BODY_LENGTH = 30;
-static const GLdouble BODY_WIDTH = 20;
-static const GLdouble BUMPER_HEIGHT = 10;
-static const GLdouble WHEEL_BODY_OFFSET = 5;
-static const GLdouble WHEEL_WIDTH = 4;
-static const GLdouble WHEEL_LENGTH = 6;
+struct Robot robot;
+
+static void init_measures() {
+    robot.BODY_LENGTH = 30;
+    robot.BODY_WIDTH = 20;
+    robot.BUMPER_HEIGHT = 10;
+    robot.WHEEL_BODY_OFFSET = 5;
+    robot.WHEEL_WIDTH = 4;
+    robot.WHEEL_LENGTH = 6;
+}
+
+static void init_bumper() {
+
+    robot.vert_bumper[0].x = robot.BODY_LENGTH / 2;
+    robot.vert_bumper[0].y = robot.BODY_WIDTH / 2;
+    robot.vert_bumper[1].x = robot.BODY_LENGTH / 2 + robot.BUMPER_HEIGHT;
+    robot.vert_bumper[1].y = 0;
+    robot.vert_bumper[2].x = robot.BODY_LENGTH / 2;
+    robot.vert_bumper[2].y = - robot.BODY_WIDTH / 2;
+}
+
+static void init_body() {
+
+    robot.vert_body[0].x = - robot.BODY_LENGTH / 2;
+    robot.vert_body[0].y = robot.BODY_WIDTH / 2;
+    robot.vert_body[1].x = robot.BODY_LENGTH / 2;
+    robot.vert_body[1].y = robot.BODY_WIDTH / 2;
+    robot.vert_body[2].x = robot.BODY_LENGTH / 2;
+    robot.vert_body[2].y = - robot.BODY_WIDTH / 2;
+    robot.vert_body[3].x = - robot.BODY_LENGTH / 2;
+    robot.vert_body[3].y = - robot.BODY_WIDTH / 2;
+}
+
+static void init_wheels() {
+
+    robot.vert_wheels[0].x = - robot.BODY_LENGTH / 2 + robot.WHEEL_BODY_OFFSET;
+    robot.vert_wheels[0].y = robot.BODY_WIDTH / 2 + robot.WHEEL_WIDTH;
+    robot.vert_wheels[1].x = - robot.BODY_LENGTH / 2 + robot.WHEEL_BODY_OFFSET +
+        robot.WHEEL_LENGTH;
+
+    robot.vert_wheels[1].y = robot.BODY_WIDTH / 2 + robot.WHEEL_WIDTH;
+    robot.vert_wheels[2].x = - robot.BODY_LENGTH / 2 + robot.WHEEL_BODY_OFFSET +
+        robot.WHEEL_LENGTH;
+
+    robot.vert_wheels[2].y = - robot.BODY_WIDTH / 2 - robot.WHEEL_WIDTH;
+    robot.vert_wheels[3].x = - robot.BODY_LENGTH / 2 + robot.WHEEL_BODY_OFFSET;
+    robot.vert_wheels[3].y = - robot.BODY_WIDTH / 2 - robot.WHEEL_WIDTH;
+}
+
+void init_robot() {
+
+    init_measures();
+    init_bumper();
+    init_body();
+    init_wheels();
+}
 
 static void draw_bumper() {
-
-    struct vertices *vert_bumper = init_vertices(3);
-
-    vert_bumper->verts[0].x = BODY_LENGTH / 2;
-    vert_bumper->verts[0].y = BODY_WIDTH / 2;
-    vert_bumper->verts[1].x = BODY_LENGTH / 2 + BUMPER_HEIGHT;
-    vert_bumper->verts[1].y = 0;
-    vert_bumper->verts[2].x = BODY_LENGTH / 2;
-    vert_bumper->verts[2].y = - BODY_WIDTH / 2;
 
     struct color col;
     col.r = 0.0;
     col.g = 0.0;
     col.b = 0.0;
-    draw_triangle(vert_bumper, &col);
 
-    free(vert_bumper);
+    draw_triangle(robot.vert_bumper, &col);
 }
 
 static void draw_body() {
-
-    struct vertices *vert_body= init_vertices(4);
-
-    vert_body->verts[0].x = - BODY_LENGTH / 2;
-    vert_body->verts[0].y = BODY_WIDTH / 2;
-    vert_body->verts[1].x = BODY_LENGTH / 2;
-    vert_body->verts[1].y = BODY_WIDTH / 2;
-    vert_body->verts[2].x = BODY_LENGTH / 2;
-    vert_body->verts[2].y = - BODY_WIDTH / 2;
-    vert_body->verts[3].x = - BODY_LENGTH / 2;
-    vert_body->verts[3].y = - BODY_WIDTH / 2;
 
     struct color col;
     col.r = 1.0;
     col.g = 0.0;
     col.b = 0.0;
 
-    draw_quadrilateral(vert_body, &col);
-
-    free(vert_body);
+    draw_quadrilateral(robot.vert_body, &col);
 }
 
 static void draw_wheels() {
-
-    struct vertices *vert_wheels = init_vertices(4);
-
-    vert_wheels->verts[0].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET;
-    vert_wheels->verts[0].y = BODY_WIDTH / 2 + WHEEL_WIDTH;
-    vert_wheels->verts[1].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET + WHEEL_LENGTH;
-    vert_wheels->verts[1].y = BODY_WIDTH / 2 + WHEEL_WIDTH;
-    vert_wheels->verts[2].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET + WHEEL_LENGTH;
-    vert_wheels->verts[2].y = - BODY_WIDTH / 2 - WHEEL_WIDTH;
-    vert_wheels->verts[3].x = - BODY_LENGTH / 2 + WHEEL_BODY_OFFSET;
-    vert_wheels->verts[3].y = - BODY_WIDTH / 2 - WHEEL_WIDTH;
 
     struct color col;
     col.r = 0.0;
     col.g = 0.0;
     col.b = 0.0;
 
-    draw_quadrilateral(vert_wheels, &col);
-
-    free(vert_wheels);
+    draw_quadrilateral(robot.vert_wheels, &col);
 }
 
 // Draw robot at origin.

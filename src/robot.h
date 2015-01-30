@@ -27,10 +27,23 @@
 
 #include "graphics.h"
 
-struct robot {
-    const int length;
-    const int height;
+// TODO: check if this struct is needed.
+struct Robot {
+    GLdouble BODY_LENGTH;
+    GLdouble BODY_WIDTH;
+    GLdouble BUMPER_HEIGHT;
+    GLdouble WHEEL_BODY_OFFSET;
+    GLdouble WHEEL_WIDTH;
+    GLdouble WHEEL_LENGTH;
+
+    struct vertex vert_bumper[3];
+    struct vertex vert_body[4];
+    struct vertex vert_wheels[4];
 };
+
+extern struct Robot robot;
+
+void init_robot(void);
 
 /**
  * Draws robot at the origin.

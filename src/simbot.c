@@ -31,6 +31,7 @@
 #include <stdbool.h>
 
 #include "graphics.h"
+#include "scenario.h"
 #include "robot.h"
 
 #define UNUSED(x) (void)x
@@ -41,10 +42,10 @@ static struct simbot {
 
     const int window_length;
     const int window_height;
-    struct robot simbot_robot;
     struct vertex destination;
+    struct vertex position;
 
-} simbot_prog = {800, 800, {40, 20}, {0.0, 0.0}};
+} simbot_prog = {800, 800, {0.0, 0.0}, {0.0, 0.0}};
 
 // TODO: add doc.
 static void error_callback(int err_code, const char* description) {
@@ -142,7 +143,7 @@ static void prepare_to_draw_window(GLFWwindow *window) {
 
     // Clear window.
     glClearColor(0.75, 0.75, 0.75, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // The viewing volume is defined by the projection matrix.
     // The next call specifies that the projection matrix is the
@@ -187,12 +188,38 @@ static void finalize_draw_window(GLFWwindow *window) {
     printf("Paint %lu\n", ++count);
 }
 
+static void rotate_robot(double angle) {
+
+    glRotated(angle, 0.0, 0.0, 1.0);
+}
+
+static void move_robot() {
+
+    double temp = (simbot_prog.destination.y - simbot_prog.position.y) /
+                             simbot_prog.destination.x - simbot_prog.position.x;
+
+    printf("dest_x %f dest_y %f robot_x %f robot_y %f\n", simbot_prog.destination.x,
+           simbot_prog.destination.y, simbot_prog.position.x, simbot_prog.position.y);
+
+    double direction = atan(temp) * 180 / 3.14;
+
+    printf("temp %f direction %f\n", temp, direction);
+
+    rotate_robot(direction);
+    draw_robot();
+
+    printf("direction %f\n", direction);
+}
+
 int main() {
 
     printf("This is SimBot!\n");
 
     GLFWwindow *main_window = init_window(simbot_prog.window_length,
                                           simbot_prog.window_height);
+
+    init_robot();
+
     while(is_window_open(main_window))
     {
         prepare_to_draw_window(main_window);
@@ -200,7 +227,7 @@ int main() {
         draw_2d_cartesian_plane(simbot_prog.window_length,
                                 simbot_prog.window_height);
 
-        draw_robot();
+        move_robot();
 
         finalize_draw_window(main_window);
         glfwWaitEvents();
