@@ -67,7 +67,7 @@ void draw_quadrilateral(struct vertex vertices[], struct color *col) {
 }
 
 // TODO: add doc.
-unsigned int get_tri_eq_height_from_side(unsigned int side) {
+int get_tri_eq_height_from_side(int side) {
     assert(side > 0 && "The size of the side must be > 0.\n");
 
     // For equilateral triangle:
@@ -79,7 +79,7 @@ unsigned int get_tri_eq_height_from_side(unsigned int side) {
     assert(h >= INT_MIN && h <= INT_MAX &&
             "Undefined float to integer conversion");
 
-    return (unsigned int)h;
+    return (int) h;
 }
 
 // TODO: add doc.

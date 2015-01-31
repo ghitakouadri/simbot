@@ -224,8 +224,7 @@ int main() {
     {
         prepare_to_draw_window(main_window);
 
-        draw_2d_cartesian_plane(simbot_prog.window_length,
-                                simbot_prog.window_height);
+        draw_2d_cartesian_plane();
 
         move_robot();
 

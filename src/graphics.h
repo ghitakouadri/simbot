@@ -17,6 +17,6 @@ struct color {
 void draw_triangle(struct vertex vertices[], struct color *col);
 void draw_line(struct vertex vertices[], struct color *col);
 void draw_quadrilateral(struct vertex vertices[], struct color *col);
-unsigned int get_tri_height_from_side(unsigned int side);
+int get_tri_eq_height_from_side(int side);
 
 #endif // ~GRAPHICS_H
