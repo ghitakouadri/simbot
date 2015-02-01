@@ -194,7 +194,11 @@ static void finalize_draw_window(GLFWwindow *window) {
 
 static void rotate_robot(double angle) {
 
-    glRotated(angle, 0.0, 0.0, 1.0);
+    if(!isnan(angle))
+    {
+        printf("rotating\n");
+        glRotated(angle, 0.0, 0.0, 1.0);
+    }
 }
 
 static void move_robot() {
