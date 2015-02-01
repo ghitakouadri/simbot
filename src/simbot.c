@@ -47,7 +47,12 @@ static struct simbot {
 
 } simbot_prog = {800, 800, {0.0, 0.0}, {0.0, 0.0}};
 
-// TODO: add doc.
+static void window_size_callback(GLFWwindow *window, int length, int height) {
+
+    UNUSED(window);
+    set_plane_size(length, height);
+}
+
 static void error_callback(int err_code, const char* description) {
 
     UNUSED(err_code);
@@ -84,7 +89,6 @@ static void set_simbot_destination() {
            simbot_prog.destination.x, simbot_prog.destination.y );
 }
 
-// TODO: add doc.
 static void mouse_button_callback(GLFWwindow *window, int button, int action,
                                   int mods) {
 
@@ -103,7 +107,7 @@ static void set_callbacks(GLFWwindow *window) {
     glfwSetErrorCallback(error_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetCursorPosCallback(window, mouse_position_callback);
-
+    glfwSetWindowSizeCallback(window, window_size_callback);
 }
 
 static GLFWwindow* init_window(const int window_length, const int window_height) {
