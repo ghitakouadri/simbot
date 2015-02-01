@@ -3,7 +3,7 @@
 
 #include <GL/gl.h>
 
-struct vertex {
+struct Vertex {
     double x;
     double y;
 };
@@ -14,9 +14,9 @@ struct color {
     double b;
 };
 
-void draw_triangle(struct vertex vertices[], struct color *col);
-void draw_line(struct vertex vertices[], struct color *col);
-void draw_quadrilateral(struct vertex vertices[], struct color *col);
+void draw_triangle(struct Vertex vertices[], struct color *col);
+void draw_line(struct Vertex vertices[], struct color *col);
+void draw_quadrilateral(struct Vertex vertices[], struct color *col);
 int get_tri_eq_height_from_side(int side);
 
 #endif // ~GRAPHICS_H

@@ -28,10 +28,10 @@
 #include "scenario.h"
 #include "graphics.h"
 
-static struct vertex x_axis_vert[2];
-static struct vertex y_axis_vert[2];
-static struct vertex x_axis_direction_vert[3];
-static struct vertex y_axis_direction_vert[3];
+static struct Vertex x_axis_vert[2];
+static struct Vertex y_axis_vert[2];
+static struct Vertex x_axis_direction_vert[3];
+static struct Vertex y_axis_direction_vert[3];
 
 static void draw_axes() {
 

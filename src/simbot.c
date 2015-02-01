@@ -36,14 +36,14 @@
 
 #define UNUSED(x) (void)x
 
-static struct vertex cursor_position = {0.0, 0.0};
+static struct Vertex cursor_position = {0.0, 0.0};
 
 static struct simbot {
 
     const int window_length;
     const int window_height;
-    struct vertex destination;
-    struct vertex position;
+    struct Vertex destination;
+    struct Vertex position;
 
 } simbot_prog = {800, 800, {0.0, 0.0}, {0.0, 0.0}};
 

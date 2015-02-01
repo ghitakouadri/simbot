@@ -36,9 +36,9 @@ struct Robot {
     GLdouble WHEEL_WIDTH;
     GLdouble WHEEL_LENGTH;
 
-    struct vertex vert_bumper[3];
-    struct vertex vert_body[4];
-    struct vertex vert_wheels[4];
+    struct Vertex vert_bumper[3];
+    struct Vertex vert_body[4];
+    struct Vertex vert_wheels[4];
 };
 
 extern struct Robot robot;

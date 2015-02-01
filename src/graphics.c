@@ -32,7 +32,7 @@
 static long round_f_to_l(float x);
 
 // TODO: add doc.
-void draw_triangle(struct vertex vertices[], struct color *col) {
+void draw_triangle(struct Vertex vertices[], struct color *col) {
 
     glBegin(GL_TRIANGLES);
       glColor3d(col->r, col->g, col->b);
@@ -45,7 +45,7 @@ void draw_triangle(struct vertex vertices[], struct color *col) {
 }
 
 // TODO: add doc.
-void draw_line(struct vertex vertices[], struct color *col) {
+void draw_line(struct Vertex vertices[], struct color *col) {
 
     glBegin(GL_LINES);
       glColor3d(col->r, col->g, col->b);
@@ -55,7 +55,7 @@ void draw_line(struct vertex vertices[], struct color *col) {
 }
 
 // TODO: add doc.
-void draw_quadrilateral(struct vertex vertices[], struct color *col) {
+void draw_quadrilateral(struct Vertex vertices[], struct color *col) {
 
     glBegin(GL_QUADS);
       glColor3d(col->r, col->g, col->b);
