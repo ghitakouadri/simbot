@@ -20,3 +20,4 @@ void draw_quadrilateral(struct Vertex vertices[], struct color *col);
 int get_tri_eq_height_from_side(int side);
 
 #endif // ~GRAPHICS_H
+

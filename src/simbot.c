@@ -85,7 +85,7 @@ static void set_simbot_destination() {
     simbot_prog.destination.x = x;
     simbot_prog.destination.y = y;
 
-    printf("Recorded destination: x=%f y=%f\n",
+    printf("%s: Recorded destination: x=%f y=%f\n", __func__,
            simbot_prog.destination.x, simbot_prog.destination.y );
 }
 
@@ -189,39 +189,62 @@ static void finalize_draw_window(GLFWwindow *window) {
     glfwSwapBuffers(window);
 
     static unsigned long count = 0;
-    printf("Paint %lu\n", ++count);
+    printf("%s: Paint %lu\n", __func__, ++count);
+}
+
+static void translate_robot() {
+
+    printf("%s: translate to %f %f\n", __func__, simbot_prog.position.x, simbot_prog.position.y);
+    glTranslated(simbot_prog.position.x, simbot_prog.position.y, 0.0);
 }
 
 static void rotate_robot(double angle) {
 
     if(!isnan(angle))
     {
-        printf("rotating\n");
+        printf("%s: rotating at angle %f\n", __func__, angle);
         glRotated(angle, 0.0, 0.0, 1.0);
     }
 }
 
+static double get_destination_angle() {
+
+    // Transform the vector identified by the current position and the
+    // destination point into the component form <D - P>. A vector in component
+    // form has the initial point at the origin of the axes.
+    struct Vertex comp_form;
+    comp_form.x = simbot_prog.destination.x - simbot_prog.position.x;
+    comp_form.y = simbot_prog.destination.y - simbot_prog.position.y;
+
+    // Calculate the angle between the vector in component form and the x axis.
+    double direction = atan(comp_form.y / comp_form.x) * 180 / 3.14;
+
+    // In order to calculate the angle between the x axis and the actual
+    // destination, the direction needs to be adjusted if the component form is
+    // in the second or third quadrant.
+    if(comp_form.x < 0)
+    {
+        direction += 180;
+    }
+
+    return direction;
+}
+
 static void move_robot() {
 
-    double temp = (simbot_prog.destination.y - simbot_prog.position.y) /
-                             simbot_prog.destination.x - simbot_prog.position.x;
+    printf("%s: robot destination %f %f\n", __func__,
+            simbot_prog.destination.x, simbot_prog.destination.y);
 
-    printf("dest_x %f dest_y %f robot_x %f robot_y %f\n", simbot_prog.destination.x,
-           simbot_prog.destination.y, simbot_prog.position.x, simbot_prog.position.y);
+    translate_robot();
 
-    double direction = atan(temp) * 180 / 3.14;
-
-    printf("temp %f direction %f\n", temp, direction);
-
-    rotate_robot(direction);
+    double destination_angle = get_destination_angle();
+    rotate_robot(destination_angle);
     draw_robot();
-
-    printf("direction %f\n", direction);
 }
 
 int main() {
 
-    printf("This is SimBot!\n");
+    printf("%s: This is SimBot!\n", __func__);
 
     GLFWwindow *main_window = init_window(simbot_prog.window_length,
                                           simbot_prog.window_height);
