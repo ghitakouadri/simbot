@@ -66,6 +66,15 @@ void draw_quadrilateral(struct Vertex vertices[], struct color *col) {
     glEnd();
 }
 
+void draw_point(struct Vertex vert) {
+
+    glPointSize(20.0);
+    glBegin(GL_POINTS);
+      glColor3d(1.0, 0.0, 0.0);
+      glVertex2d(vert.x, vert.y);
+    glEnd();
+}
+
 // TODO: add doc.
 int get_tri_eq_height_from_side(int side) {
     assert(side > 0 && "The size of the side must be > 0.\n");
