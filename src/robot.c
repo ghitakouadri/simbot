@@ -20,9 +20,27 @@
     or online at <http://www.gnu.org/licenses/gpl-2.0.html>
 */
 
+// TODO: remove this rubbish. This is required to compile nanosleep.
+//       If you need it, use a compiler switch.
+
+#define _DEFAULT_SOURCE
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <string.h>
+#include <errno.h>
+#include <math.h>
+#include <time.h>
 
 #include "robot.h"
+#include "simbot.h"
+#include "common.h"
+#include "controller.h"
+
+// TODO: debug only.
+#include "graphics.h"
 
 struct Robot robot;
 
@@ -117,5 +135,75 @@ void draw_robot() {
     draw_bumper();
     draw_wheels();
     draw_body();
+}
+
+// This method updates the robot's position and heading at each time tick.
+static void update_robot_state() {
+
+    printf("%s: robot destination %f %f\n", __func__,
+            simbot_prog.destination.x, simbot_prog.destination.y);
+
+    // TODO: this comparison is broken. See #8.
+    if(simbot_prog.position.x == simbot_prog.destination.x &&
+       simbot_prog.position.y == simbot_prog.destination.y)
+    {
+        return;
+    }
+
+    struct Vertex new_pos = get_new_pos(simbot_prog.position,
+                                        simbot_prog.heading);
+
+    simbot_prog.position.x = new_pos.x;
+    simbot_prog.position.y = new_pos.y;
+
+    printf("%s: new position x=%f y=%f\n", __func__, new_pos.x, new_pos.y);
+
+    simbot_prog.heading = get_new_angle(simbot_prog.position,
+                                        simbot_prog.destination);
+
+    printf("%s: new robot heading %f\n", __func__, simbot_prog.heading);
+}
+
+// TODO: this loop and the graphics loop need to be synchronized.
+//       For each state update the graphics loop need to paint another image.
+//       See issue #7.
+static void* simbot_loop(void* params) {
+
+    UNUSED(params);
+
+    while(simbot_prog.running)
+    {
+        printf("**************************\n");
+        printf("simbot loop\n");
+
+        update_robot_state();
+
+        printf("**************************\n\n\n");
+
+        struct timespec time_tick;
+        time_tick.tv_sec = 0;
+        time_tick.tv_nsec = 200 * 1000 * 1000;
+        nanosleep(&time_tick ,NULL);
+    }
+
+    return NULL;
+}
+
+void start_simbot() {
+
+    init_robot();
+
+    pthread_t simbot_thread;
+
+    simbot_prog.running = true;
+
+    int ret = pthread_create(&simbot_thread, NULL, &simbot_loop, NULL);
+    if(ret != 0)
+    {
+        fprintf(stderr, "%s: error starting simbot, %s\n",
+                __func__, strerror(errno));
+
+        exit(EXIT_FAILURE);
+    }
 }
 

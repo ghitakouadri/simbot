@@ -3,6 +3,7 @@
 
 #include <GL/gl.h>
 
+// TODO: move in common header.
 struct Vertex {
     double x;
     double y;

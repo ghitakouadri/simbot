@@ -20,6 +20,10 @@
     or online at <http://www.gnu.org/licenses/gpl-2.0.html>
 */
 
+// TODO: remove this rubbish. This is required to compile nanosleep.
+//       If you need it, use a compiler switch.
+#define _DEFAULT_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <GLFW/glfw3.h>
@@ -29,23 +33,18 @@
 #include <assert.h>
 #include <float.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "graphics.h"
 #include "scenario.h"
 #include "robot.h"
-
-#define UNUSED(x) (void)x
+#include "simbot.h"
+#include "common.h"
+#include "controller.h"
 
 static struct Vertex cursor_position = {0.0, 0.0};
 
-static struct simbot {
-
-    const int window_length;
-    const int window_height;
-    struct Vertex destination;
-    struct Vertex position;
-
-} simbot_prog = {800, 800, {0.0, 0.0}, {0.0, 0.0}};
+struct simbot simbot_prog = {800, 800, {0.0, 0.0}, {0.0, 0.0}, false, 0.0};
 
 static void window_size_callback(GLFWwindow *window, int length, int height) {
 
@@ -187,59 +186,23 @@ static void finalize_draw_window(GLFWwindow *window) {
 
     glFlush();
     glfwSwapBuffers(window);
-
-    static unsigned long count = 0;
-    printf("%s: Paint %lu\n", __func__, ++count);
 }
 
 static void translate_robot() {
 
-    printf("%s: translate to %f %f\n", __func__, simbot_prog.position.x, simbot_prog.position.y);
+    printf("%s: translate to %f %f\n", __func__, simbot_prog.position.x,
+                                                 simbot_prog.position.y);
+
     glTranslated(simbot_prog.position.x, simbot_prog.position.y, 0.0);
 }
 
-static void rotate_robot(double angle) {
+static void rotate_robot() {
 
-    if(!isnan(angle))
+    if(!isnan(simbot_prog.heading))
     {
-        printf("%s: rotating at angle %f\n", __func__, angle);
-        glRotated(angle, 0.0, 0.0, 1.0);
+        printf("%s: rotating at angle %f\n", __func__, simbot_prog.heading);
+        glRotated(simbot_prog.heading, 0.0, 0.0, 1.0);
     }
-}
-
-static double get_destination_angle() {
-
-    // Transform the vector identified by the current position and the
-    // destination point into the component form <D - P>. A vector in component
-    // form has the initial point at the origin of the axes.
-    struct Vertex comp_form;
-    comp_form.x = simbot_prog.destination.x - simbot_prog.position.x;
-    comp_form.y = simbot_prog.destination.y - simbot_prog.position.y;
-
-    // Calculate the angle between the vector in component form and the x axis.
-    double direction = atan(comp_form.y / comp_form.x) * 180 / 3.14;
-
-    // In order to calculate the angle between the x axis and the actual
-    // destination, the direction needs to be adjusted if the component form is
-    // in the second or third quadrant.
-    if(comp_form.x < 0)
-    {
-        direction += 180;
-    }
-
-    return direction;
-}
-
-static void move_robot() {
-
-    printf("%s: robot destination %f %f\n", __func__,
-            simbot_prog.destination.x, simbot_prog.destination.y);
-
-    translate_robot();
-
-    double destination_angle = get_destination_angle();
-    rotate_robot(destination_angle);
-    draw_robot();
 }
 
 int main() {
@@ -249,7 +212,10 @@ int main() {
     GLFWwindow *main_window = init_window(simbot_prog.window_length,
                                           simbot_prog.window_height);
 
-    init_robot();
+    init_controller();
+
+    // TODO: implement game state update and frame painting in the same thread.
+    start_simbot();
 
     while(is_window_open(main_window))
     {
@@ -257,10 +223,17 @@ int main() {
 
         draw_2d_cartesian_plane();
 
-        move_robot();
+        translate_robot();
+        rotate_robot();
+        draw_robot();
 
         finalize_draw_window(main_window);
-        glfwWaitEvents();
+        glfwPollEvents();
+
+        struct timespec time_tick;
+        time_tick.tv_sec = 0;
+        time_tick.tv_nsec = 200 * 1000 * 1000;
+        nanosleep(&time_tick ,NULL);
     }
 
     glfwTerminate();

@@ -25,6 +25,7 @@
 
 #include <GLFW/glfw3.h>
 
+// TODO: use forward declaration instead.
 #include "graphics.h"
 
 // TODO: check if this struct is needed.
@@ -49,6 +50,8 @@ void init_robot(void);
  * Draws robot at the origin.
  */
 void draw_robot(void);
+
+void start_simbot(void);
 
 #endif // ~ROBOT_H
 
