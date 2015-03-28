@@ -75,6 +75,16 @@ void draw_point(struct Vertex vert) {
     glEnd();
 }
 
+void translate_object(struct Vertex pos) {
+
+    glTranslated(pos.x, pos.y, 0.0);
+}
+
+void rotate_object(double angle) {
+
+    glRotated(angle, 0.0, 0.0, 1.0);
+}
+
 // TODO: add doc.
 int get_tri_eq_height_from_side(int side) {
     assert(side > 0 && "The size of the side must be > 0.\n");

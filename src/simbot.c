@@ -44,7 +44,7 @@
 
 static struct Vertex cursor_position = {0.0, 0.0};
 
-struct simbot simbot_prog = {800, 800, {0.0, 0.0}, {0.0, 0.0}, false, 0.0};
+static struct Program program = {800, 800, false};
 
 static void window_size_callback(GLFWwindow *window, int length, int height) {
 
@@ -60,11 +60,11 @@ static void error_callback(int err_code, const char* description) {
 
 static void window_to_cartesian_coord(double *x, double *y) {
 
-    *x = *x - simbot_prog.window_length / 2;
+    *x = *x - program.window_length / 2;
 
     // The y coordinate is flipped because the window y coordinate grows towards
     // decreasing cartesian y values.
-    *y = -(*y - simbot_prog.window_height / 2);
+    *y = -(*y - program.window_height / 2);
 }
 
 static void mouse_position_callback(GLFWwindow *window, double x, double y) {
@@ -74,18 +74,18 @@ static void mouse_position_callback(GLFWwindow *window, double x, double y) {
     cursor_position.y = y;
 }
 
-static void set_simbot_destination() {
+static struct Vertex get_cursor_position() {
 
     double x = cursor_position.x;
     double y = cursor_position.y;
 
     window_to_cartesian_coord(&x, &y);
 
-    simbot_prog.destination.x = x;
-    simbot_prog.destination.y = y;
+    struct Vertex cursor_pos = {x, y};
 
-    printf("%s: Recorded destination: x=%f y=%f\n", __func__,
-           simbot_prog.destination.x, simbot_prog.destination.y );
+    printf("%s: Recorded destination: x=%f y=%f\n", __func__, x, y );
+
+    return cursor_pos;
 }
 
 static void mouse_button_callback(GLFWwindow *window, int button, int action,
@@ -97,7 +97,8 @@ static void mouse_button_callback(GLFWwindow *window, int button, int action,
 
     if(action == GLFW_PRESS)
     {
-        set_simbot_destination();
+        struct Vertex cursor_pos = get_cursor_position();
+        set_robot_destination(cursor_pos);
     }
 }
 
@@ -188,29 +189,12 @@ static void finalize_draw_window(GLFWwindow *window) {
     glfwSwapBuffers(window);
 }
 
-static void translate_robot() {
-
-    printf("%s: translate to %f %f\n", __func__, simbot_prog.position.x,
-                                                 simbot_prog.position.y);
-
-    glTranslated(simbot_prog.position.x, simbot_prog.position.y, 0.0);
-}
-
-static void rotate_robot() {
-
-    if(!isnan(simbot_prog.heading))
-    {
-        printf("%s: rotating at angle %f\n", __func__, simbot_prog.heading);
-        glRotated(simbot_prog.heading, 0.0, 0.0, 1.0);
-    }
-}
-
 int main() {
 
     printf("%s: This is SimBot!\n", __func__);
 
-    GLFWwindow *main_window = init_window(simbot_prog.window_length,
-                                          simbot_prog.window_height);
+    GLFWwindow *main_window = init_window(program.window_length,
+                                          program.window_height);
 
     init_controller();
 
@@ -223,8 +207,6 @@ int main() {
 
         draw_2d_cartesian_plane();
 
-        translate_robot();
-        rotate_robot();
         draw_robot();
 
         finalize_draw_window(main_window);

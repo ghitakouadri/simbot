@@ -91,12 +91,21 @@ static void init_wheels() {
     robot.vert_wheels[3].y = - robot.BODY_WIDTH / 2 - robot.WHEEL_WIDTH;
 }
 
+static void init_state() {
+
+    robot.destination.x = 0.0;
+    robot.destination.y = 0.0;
+
+    robot.heading = 0.0;
+}
+
 void init_robot() {
 
     init_measures();
     init_bumper();
     init_body();
     init_wheels();
+    init_state();
 }
 
 static void draw_bumper() {
@@ -129,8 +138,28 @@ static void draw_wheels() {
     draw_quadrilateral(robot.vert_wheels, &col);
 }
 
+static void translate_robot() {
+
+    printf("%s: translate to %f %f\n", __func__, robot.position.x,
+                                                 robot.position.y);
+
+    translate_object(robot.position);
+}
+
+static void rotate_robot() {
+
+    if(!isnan(robot.heading))
+    {
+        printf("%s: rotating at angle %f\n", __func__, robot.heading);
+        glRotated(robot.heading, 0.0, 0.0, 1.0);
+    }
+}
+
 // Draw robot at origin.
 void draw_robot() {
+
+    translate_robot();
+    rotate_robot();
 
     draw_bumper();
     draw_wheels();
@@ -141,27 +170,25 @@ void draw_robot() {
 static void update_robot_state() {
 
     printf("%s: robot destination %f %f\n", __func__,
-            simbot_prog.destination.x, simbot_prog.destination.y);
+            robot.destination.x, robot.destination.y);
 
     // TODO: this comparison is broken. See #8.
-    if(simbot_prog.position.x == simbot_prog.destination.x &&
-       simbot_prog.position.y == simbot_prog.destination.y)
+    if(robot.position.x == robot.destination.x &&
+       robot.position.y == robot.destination.y)
     {
         return;
     }
 
-    struct Vertex new_pos = get_new_pos(simbot_prog.position,
-                                        simbot_prog.heading);
+    struct Vertex new_pos = get_new_pos(robot.position, robot.heading);
 
-    simbot_prog.position.x = new_pos.x;
-    simbot_prog.position.y = new_pos.y;
+    robot.position.x = new_pos.x;
+    robot.position.y = new_pos.y;
 
     printf("%s: new position x=%f y=%f\n", __func__, new_pos.x, new_pos.y);
 
-    simbot_prog.heading = get_new_angle(simbot_prog.position,
-                                        simbot_prog.destination);
+    robot.heading = get_new_angle(robot.position, robot.destination);
 
-    printf("%s: new robot heading %f\n", __func__, simbot_prog.heading);
+    printf("%s: new robot heading %f\n", __func__, robot.heading);
 }
 
 // TODO: this loop and the graphics loop need to be synchronized.
@@ -171,7 +198,9 @@ static void* simbot_loop(void* params) {
 
     UNUSED(params);
 
-    while(simbot_prog.running)
+    robot.running = true;
+
+    while(robot.running)
     {
         printf("**************************\n");
         printf("simbot loop\n");
@@ -189,13 +218,16 @@ static void* simbot_loop(void* params) {
     return NULL;
 }
 
+void set_robot_destination(struct Vertex dest) {
+
+    robot.destination = dest;
+}
+
 void start_simbot() {
 
     init_robot();
 
     pthread_t simbot_thread;
-
-    simbot_prog.running = true;
 
     int ret = pthread_create(&simbot_thread, NULL, &simbot_loop, NULL);
     if(ret != 0)

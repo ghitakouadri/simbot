@@ -24,6 +24,7 @@
 #define ROBOT_H
 
 #include <GLFW/glfw3.h>
+#include <stdbool.h>
 
 // TODO: use forward declaration instead.
 #include "graphics.h"
@@ -40,6 +41,13 @@ struct Robot {
     struct Vertex vert_bumper[3];
     struct Vertex vert_body[4];
     struct Vertex vert_wheels[4];
+
+    struct Vertex destination;
+    struct Vertex position;
+
+    double heading;
+
+    volatile bool running;
 };
 
 extern struct Robot robot;
@@ -50,6 +58,8 @@ void init_robot(void);
  * Draws robot at the origin.
  */
 void draw_robot(void);
+
+void set_robot_destination(struct Vertex dest);
 
 void start_simbot(void);
 
