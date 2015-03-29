@@ -35,7 +35,6 @@
 #include <time.h>
 
 #include "robot.h"
-#include "simbot.h"
 #include "common.h"
 #include "controller.h"
 

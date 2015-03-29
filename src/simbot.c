@@ -38,13 +38,16 @@
 #include "graphics.h"
 #include "scenario.h"
 #include "robot.h"
-#include "simbot.h"
 #include "common.h"
 #include "controller.h"
 
-static struct Vertex cursor_position = {0.0, 0.0};
+static struct Program {
 
-static struct Program program = {800, 800, false};
+    const int window_length;
+    const int window_height;
+    struct Vertex cursor_position;
+    volatile bool running;
+} program = {800, 800, {0.0, 0.0}, false};
 
 static void window_size_callback(GLFWwindow *window, int length, int height) {
 
@@ -70,14 +73,14 @@ static void window_to_cartesian_coord(double *x, double *y) {
 static void mouse_position_callback(GLFWwindow *window, double x, double y) {
 
     UNUSED(window);
-    cursor_position.x = x;
-    cursor_position.y = y;
+    program.cursor_position.x = x;
+    program.cursor_position.y = y;
 }
 
 static struct Vertex get_cursor_position() {
 
-    double x = cursor_position.x;
-    double y = cursor_position.y;
+    double x = program.cursor_position.x;
+    double y = program.cursor_position.y;
 
     window_to_cartesian_coord(&x, &y);
 
