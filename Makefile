@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -I/usr/include -Weverything -std=c11
+CFLAGS = -I/usr/include -Weverything -std=c11 -D _DEFAULT_SOURCE
 LDFLAGS = -L/usr/bin -lglfw -lGL -lm -lpthread
 SRC_DIR = src
 SOURCES = $(wildcard $(SRC_DIR)/*.c)

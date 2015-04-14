@@ -94,6 +94,8 @@ flags = [
 # Project's headers.
 '-isystem',
 '/usr/include/GLFW',
+# Project's Macros
+'-D _DEFAULT_SOURCE',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the

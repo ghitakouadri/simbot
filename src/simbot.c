@@ -20,10 +20,6 @@
     or online at <http://www.gnu.org/licenses/gpl-2.0.html>
 */
 
-// TODO: remove this rubbish. This is required to compile nanosleep.
-//       If you need it, use a compiler switch.
-#define _DEFAULT_SOURCE
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <GLFW/glfw3.h>
