@@ -2,3 +2,4 @@ cscope*
 *.swp
 tags
 bin/**
+.ycm*
