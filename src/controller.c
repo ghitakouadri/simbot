@@ -1,5 +1,7 @@
 #include <math.h>
 #include <stdio.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "controller.h"
 // TODO: decuple the controller from the graphics.
@@ -32,6 +34,10 @@ static double get_destination_angle(struct Vertex pos, struct Vertex dest) {
     return direction;
 }
 
+/**
+ * The angular velocity (omega) model is a simple P regulator.
+ * omega = kp(error).
+ */
 static double get_ang_vel(struct Vertex pos, struct Vertex dest) {
 
     double error = get_destination_angle(pos, dest) - controller.prev_direction;
@@ -51,33 +57,61 @@ static double get_ang_vel(struct Vertex pos, struct Vertex dest) {
 
 void init_controller() {
 
-    controller.max_velocity = 4;
-    controller.time_tick = 200;
+    // Unit per second.
+    controller.max_velocity = 100;
+
+    // 17ms time tick gives up to 60fps.
+    controller.time_tick = 17;
     controller.ang_vel = 0;
-    controller.k_d_ang_vel = 0.1;
+    controller.k_d_ang_vel = 0.03;
     controller.prev_direction = 0;
 }
 
 double get_new_angle(struct Vertex pos, struct Vertex dest) {
 
-    return get_ang_vel(pos, dest) + controller.prev_direction;
+    double angular_velocity = get_ang_vel(pos, dest);
+
+    // Angle variation speed for this time tick.
+    double incremental_ang_update = angular_velocity;
+
+    return controller.prev_direction + incremental_ang_update;
+}
+
+void bound_frame_time(struct timespec *elapsed_time)
+{
+    long sleep_time = controller.time_tick * 1000 - elapsed_time->tv_nsec / 1000000;
+    if(sleep_time > 0)
+    {
+        printf("Cycle usleep %ld\n", sleep_time);
+        usleep(sleep_time);
+    }
+    else
+    {
+        printf("Cycle: not sleeping\n");
+    }
 }
 
 struct Vertex get_new_pos(struct Vertex pos, double heading) {
 
+    // Convert to rad.
+    // TODO: write util metod for this.
     heading *= 3.14 / 180;
+
+    double tick_per_sec = 1000 / controller.time_tick;
 
     struct Vertex new_pos;
     new_pos.x = pos.x +
-        controller.max_velocity * cos(heading);
+        controller.max_velocity / tick_per_sec * cos(heading);
 
-    printf("delta x %f\n", controller.max_velocity * cos(heading));
+    printf("delta x %f\n", controller.max_velocity / tick_per_sec * cos(heading));
 
     new_pos.y = pos.y +
-        controller.max_velocity * sin(heading);
+        controller.max_velocity / tick_per_sec * sin(heading);
 
-    printf("delta y %f\n", controller.max_velocity * sin(heading));
+    printf("delta y %f\n", controller.max_velocity / tick_per_sec * sin(heading));
 
+    // Convert to deg.
+    // TODO: write util metod for this.
     controller.prev_direction = heading * 180 / 3.14;
 
     return new_pos;

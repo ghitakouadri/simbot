@@ -161,8 +161,9 @@ void draw_robot() {
 }
 
 // This method updates the robot's position and heading at each time tick.
-static void update_robot_state() {
+void update_robot_state() {
 
+    printf("RSU BEGIN:\n");
     printf("%s: robot destination %f %f\n", __func__,
             robot.destination.x, robot.destination.y);
 
@@ -183,53 +184,11 @@ static void update_robot_state() {
     robot.heading = get_new_angle(robot.position, robot.destination);
 
     printf("%s: new robot heading %f\n", __func__, robot.heading);
-}
-
-// TODO: this loop and the graphics loop need to be synchronized.
-//       For each state update the graphics loop need to paint another image.
-//       See issue #7.
-static void* simbot_loop(void* params) {
-
-    UNUSED(params);
-
-    robot.running = true;
-
-    while(robot.running)
-    {
-        printf("**************************\n");
-        printf("simbot loop\n");
-
-        update_robot_state();
-
-        printf("**************************\n\n\n");
-
-        struct timespec time_tick;
-        time_tick.tv_sec = 0;
-        time_tick.tv_nsec = 200 * 1000 * 1000;
-        nanosleep(&time_tick ,NULL);
-    }
-
-    return NULL;
+    printf("RSU END:\n\n");
 }
 
 void set_robot_destination(struct Vertex dest) {
 
     robot.destination = dest;
-}
-
-void start_simbot() {
-
-    init_robot();
-
-    pthread_t simbot_thread;
-
-    int ret = pthread_create(&simbot_thread, NULL, &simbot_loop, NULL);
-    if(ret != 0)
-    {
-        fprintf(stderr, "%s: error starting simbot, %s\n",
-                __func__, strerror(errno));
-
-        exit(EXIT_FAILURE);
-    }
 }
 

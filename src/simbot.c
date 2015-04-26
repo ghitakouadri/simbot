@@ -188,6 +188,32 @@ static void finalize_draw_window(GLFWwindow *window) {
     glfwSwapBuffers(window);
 }
 
+static void draw_window(GLFWwindow *window) {
+
+    prepare_to_draw_window(window);
+    draw_2d_cartesian_plane();
+}
+
+// TODO: move in common.
+struct timespec get_elapsed_time(struct timespec start, struct timespec stop) {
+
+    struct timespec elapsed_time;
+
+    if(stop.tv_nsec >= start.tv_nsec)
+    {
+        elapsed_time.tv_sec = stop.tv_sec - start.tv_sec;
+        elapsed_time.tv_nsec = stop.tv_nsec - start.tv_nsec;
+    }
+    else
+    {
+        long nanosec = 1000000000;
+        elapsed_time.tv_sec = stop.tv_sec - start.tv_sec - 1;
+        elapsed_time.tv_nsec = nanosec - start.tv_nsec + stop.tv_nsec;
+    }
+
+    return elapsed_time;
+}
+
 int main() {
 
     printf("%s: This is SimBot!\n", __func__);
@@ -196,25 +222,34 @@ int main() {
                                           program.window_height);
 
     init_controller();
+    init_robot();
 
-    // TODO: implement game state update and frame painting in the same thread.
-    start_simbot();
+    struct timespec timer_start;
+    struct timespec timer_stop;
 
     while(is_window_open(main_window))
     {
-        prepare_to_draw_window(main_window);
+        clock_gettime(CLOCK_REALTIME, &timer_start);
 
-        draw_2d_cartesian_plane();
+        update_robot_state();
+
+        draw_window(main_window);
 
         draw_robot();
 
         finalize_draw_window(main_window);
         glfwPollEvents();
 
-        struct timespec time_tick;
-        time_tick.tv_sec = 0;
-        time_tick.tv_nsec = 200 * 1000 * 1000;
-        nanosleep(&time_tick ,NULL);
+        clock_gettime(CLOCK_REALTIME, &timer_stop);
+
+        struct timespec elapsed_time = get_elapsed_time(timer_start, timer_stop);
+
+        bound_frame_time(&elapsed_time);
+
+        clock_gettime(CLOCK_REALTIME, &timer_stop);
+        elapsed_time = get_elapsed_time(timer_start, timer_stop);
+        printf("Cycle time %ld sec, %ld nanosec.\n",
+                elapsed_time.tv_sec, elapsed_time.tv_nsec);
     }
 
     glfwTerminate();

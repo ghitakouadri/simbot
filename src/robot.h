@@ -61,7 +61,7 @@ void draw_robot(void);
 
 void set_robot_destination(struct Vertex dest);
 
-void start_simbot(void);
+void update_robot_state(void);
 
 #endif // ~ROBOT_H
 
