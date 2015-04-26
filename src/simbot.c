@@ -42,8 +42,7 @@ static struct Program {
     const int window_length;
     const int window_height;
     struct Vertex cursor_position;
-    volatile bool running;
-} program = {800, 800, {0.0, 0.0}, false};
+} program = {800, 800, {0.0, 0.0}};
 
 static void window_size_callback(GLFWwindow *window, int length, int height) {
 

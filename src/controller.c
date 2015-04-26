@@ -4,8 +4,7 @@
 #include <unistd.h>
 
 #include "controller.h"
-// TODO: decuple the controller from the graphics.
-#include "graphics.h"
+#include "common.h"
 
 struct Controller controller;
 

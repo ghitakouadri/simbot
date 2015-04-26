@@ -1,8 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-// TODO: remove need for this header.
-#include "graphics.h"
+struct Vertex;
 
 // TODO: audit variables' placement.
 struct Controller {

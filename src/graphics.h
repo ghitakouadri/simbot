@@ -2,12 +2,7 @@
 #define GRAPHICS_H
 
 #include <GL/gl.h>
-
-// TODO: move in common header.
-struct Vertex {
-    double x;
-    double y;
-};
+#include "common.h"
 
 struct color {
     double r;

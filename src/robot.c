@@ -32,8 +32,6 @@
 #include "robot.h"
 #include "common.h"
 #include "controller.h"
-
-// TODO: debug only.
 #include "graphics.h"
 
 struct Robot robot;

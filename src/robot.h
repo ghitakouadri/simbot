@@ -25,11 +25,8 @@
 
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
+#include "common.h"
 
-// TODO: use forward declaration instead.
-#include "graphics.h"
-
-// TODO: check if this struct is needed.
 struct Robot {
     GLdouble BODY_LENGTH;
     GLdouble BODY_WIDTH;
@@ -46,8 +43,6 @@ struct Robot {
     struct Vertex position;
 
     double heading;
-
-    volatile bool running;
 };
 
 extern struct Robot robot;
