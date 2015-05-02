@@ -1,25 +1,3 @@
-/*
-    simbot is a simulator of a 2 wheels differential drive robot.
-    Copyright (C) 2014-2015 Roberto Cometti <modsrm@pagefault.io>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-    You can find the full license document in the root of this repository
-    or online at <http://www.gnu.org/licenses/gpl-2.0.html>
-*/
-
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -33,8 +11,8 @@ static struct Vertex y_axis_vert[2];
 static struct Vertex x_axis_direction_vert[3];
 static struct Vertex y_axis_direction_vert[3];
 
-static void draw_axes() {
-
+static void draw_axes()
+{
     struct color col;
     col.r = 0.0;
     col.g = 0.0;
@@ -44,8 +22,8 @@ static void draw_axes() {
     draw_line(y_axis_vert, &col);
 }
 
-static void draw_axes_directions() {
-
+static void draw_axes_directions()
+{
     struct color col;
     col.r = 0.0;
     col.g = 0.5;
@@ -55,8 +33,8 @@ static void draw_axes_directions() {
     draw_triangle(y_axis_direction_vert, &col);
 }
 
-static void set_axes_vertices(double plane_length, double plane_height) {
-
+static void set_axes_vertices(double plane_length, double plane_height)
+{
     double half_x = plane_length / 2;
     double half_y = plane_height / 2;
 
@@ -74,8 +52,8 @@ static void set_axes_vertices(double plane_length, double plane_height) {
 }
 
 static void set_axes_direction_vertices(double plane_length,
-                                        double plane_height) {
-
+                                        double plane_height)
+{
     double half_x = plane_length / 2;
     double half_y = plane_height / 2;
     int tri_side_px = 20;
@@ -103,14 +81,14 @@ static void set_axes_direction_vertices(double plane_length,
     y_axis_direction_vert[2].y = y_axis_direction_vert[1].y;
 }
 
-void set_plane_size(double length, double height) {
-
+void set_plane_size(double length, double height)
+{
     set_axes_vertices(length, height);
     set_axes_direction_vertices(length, height);
 }
 
-void draw_2d_cartesian_plane() {
-
+void draw_2d_cartesian_plane()
+{
     draw_axes();
     draw_axes_directions();
 }

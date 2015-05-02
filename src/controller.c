@@ -8,6 +8,16 @@
 
 struct Controller controller;
 
+static double get_rad_from_deg(double deg)
+{
+    return deg * 3.14 / 180;
+}
+
+static double get_deg_from_rad(double rad)
+{
+    return rad * 180 / 3.14;
+}
+
 static double get_destination_angle(struct Vertex pos, struct Vertex dest) {
 
     // Transform the vector identified by the current position and the
@@ -18,7 +28,8 @@ static double get_destination_angle(struct Vertex pos, struct Vertex dest) {
     comp_form.y = dest.y - pos.y;
 
     // Calculate the angle between the vector in component form and the x axis.
-    double direction = atan(comp_form.y / comp_form.x) * 180 / 3.14;
+    double direction = atan(comp_form.y / comp_form.x);
+    direction = get_deg_from_rad(direction);
 
     // In order to calculate the angle between the x axis and the actual
     // destination, the direction needs to be adjusted if the component form is
@@ -42,13 +53,12 @@ static double get_ang_vel(struct Vertex pos, struct Vertex dest) {
     double error = get_destination_angle(pos, dest) - controller.prev_direction;
     printf("angle error: %f\n", error);
 
-    // Convert to rad.
-    error *= 3.14 / 180;
+    error = get_rad_from_deg(error);
 
+    // P regulator.
     double ang_vel = controller.k_d_ang_vel * atan2(sin(error), cos(error));
 
-    // Convert to deg.
-    ang_vel *= 180 / 3.14;
+    ang_vel = get_deg_from_rad(ang_vel);
     printf("angular vel %f\n", ang_vel);
 
     return ang_vel;
@@ -92,9 +102,7 @@ void bound_frame_time(struct timespec *elapsed_time)
 
 struct Vertex get_new_pos(struct Vertex pos, double heading) {
 
-    // Convert to rad.
-    // TODO: write util metod for this.
-    heading *= 3.14 / 180;
+    heading = get_rad_from_deg(heading);
 
     double tick_per_sec = 1000 / controller.time_tick;
 
@@ -109,9 +117,7 @@ struct Vertex get_new_pos(struct Vertex pos, double heading) {
 
     printf("delta y %f\n", controller.max_velocity / tick_per_sec * sin(heading));
 
-    // Convert to deg.
-    // TODO: write util metod for this.
-    controller.prev_direction = heading * 180 / 3.14;
+    controller.prev_direction = get_deg_from_rad(heading);
 
     return new_pos;
 }
