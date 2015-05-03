@@ -5,9 +5,15 @@
 #include <GLFW/glfw3.h>
 
 #include "graphics.h"
-#include "scenario.h"
 
-static long round_f_to_l(float x);
+// TODO: add doc.
+static long round_f_to_l(float x)
+{
+    x += 0.5;
+    assert(x >= LONG_MIN && x <= LONG_MAX && "Rounding overflow.\n");
+
+    return (long)x;
+}
 
 void commit_window(GLFWwindow *window)
 {
@@ -15,7 +21,7 @@ void commit_window(GLFWwindow *window)
     glfwSwapBuffers(window);
 }
 
-static void prepare_to_draw_window(GLFWwindow *window)
+void prepare_to_draw_window(GLFWwindow *window)
 {
     int length = 0;
     int height = 0;
@@ -60,12 +66,6 @@ static void prepare_to_draw_window(GLFWwindow *window)
     glLoadIdentity();
 }
 
-void draw_window(GLFWwindow *window)
-{
-    prepare_to_draw_window(window);
-    draw_2d_cartesian_plane();
-}
-
 struct GLFWwindow* init_window(const int window_length, const int window_height)
 {
     if(glfwInit() != GL_TRUE)
@@ -88,7 +88,7 @@ struct GLFWwindow* init_window(const int window_length, const int window_height)
 }
 
 // TODO: add doc.
-void draw_triangle(struct Vertex vertices[], struct color *col)
+void draw_triangle(struct Vertex vertices[], struct Color *col)
 {
     glBegin(GL_TRIANGLES);
       glColor3d(col->r, col->g, col->b);
@@ -101,7 +101,7 @@ void draw_triangle(struct Vertex vertices[], struct color *col)
 }
 
 // TODO: add doc.
-void draw_line(struct Vertex vertices[], struct color *col)
+void draw_line(struct Vertex vertices[], struct Color *col)
 {
     glBegin(GL_LINES);
       glColor3d(col->r, col->g, col->b);
@@ -111,7 +111,7 @@ void draw_line(struct Vertex vertices[], struct color *col)
 }
 
 // TODO: add doc.
-void draw_quadrilateral(struct Vertex vertices[], struct color *col)
+void draw_quadrilateral(struct Vertex vertices[], struct Color *col)
 {
     glBegin(GL_QUADS);
       glColor3d(col->r, col->g, col->b);
@@ -156,14 +156,5 @@ int get_tri_eq_height_from_side(int side)
             "Undefined float to integer conversion");
 
     return (int) h;
-}
-
-// TODO: add doc.
-static long round_f_to_l(float x)
-{
-    x += 0.5;
-    assert(x >= LONG_MIN && x <= LONG_MAX && "Rounding overflow.\n");
-
-    return (long)x;
 }
 

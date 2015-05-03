@@ -136,7 +136,7 @@ int main()
 
         draw_window(main_window);
 
-        draw_robot();
+        draw_robot(get_robot_position(), get_robot_heading());
 
         commit_window(main_window);
         glfwPollEvents();

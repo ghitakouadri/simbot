@@ -6,7 +6,13 @@
 #include "controller.h"
 #include "common.h"
 
-struct Controller controller;
+static struct Controller {
+    double max_velocity;
+    int time_tick;
+    double ang_vel;
+    double k_d_ang_vel;
+    double prev_direction;
+} controller;
 
 static double get_rad_from_deg(double deg)
 {

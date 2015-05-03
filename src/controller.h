@@ -2,17 +2,7 @@
 #define CONTROLLER_H
 
 struct Vertex;
-
-// TODO: audit variables' placement.
-struct Controller {
-    double max_velocity;
-    int time_tick;
-    double ang_vel;
-    double k_d_ang_vel;
-    double prev_direction;
-};
-
-extern struct Controller controller;
+struct timespec;
 
 void init_controller(void);
 double get_new_angle(struct Vertex pos, struct Vertex dest);
