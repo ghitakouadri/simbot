@@ -94,20 +94,16 @@ double get_new_angle(struct Vertex pos, struct Vertex dest) {
 
 void bound_frame_time(struct timespec *elapsed_time)
 {
-    long sleep_time = controller.time_tick * 1000 - elapsed_time->tv_nsec / 1000000;
+    long sleep_time = controller.time_tick * 1000 - elapsed_time->tv_nsec / 1000;
     if(sleep_time > 0)
     {
         printf("Cycle usleep %ld\n", sleep_time);
         usleep(sleep_time);
     }
-    else
-    {
-        printf("Cycle: not sleeping\n");
-    }
 }
 
-struct Vertex get_new_pos(struct Vertex pos, double heading) {
-
+struct Vertex get_new_pos(struct Vertex pos, double heading)
+{
     heading = get_rad_from_deg(heading);
 
     double tick_per_sec = 1000 / controller.time_tick;
