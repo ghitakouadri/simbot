@@ -22,12 +22,12 @@ static struct Controller {
 
 static double get_rad_from_deg(double deg)
 {
-    return deg * 3.14 / 180;
+    return deg * M_PI / 180;
 }
 
 static double get_deg_from_rad(double rad)
 {
-    return rad * 180 / 3.14;
+    return rad * 180 / M_PI;
 }
 
 static double get_destination_angle(struct Vertex pos, struct Vertex dest)
