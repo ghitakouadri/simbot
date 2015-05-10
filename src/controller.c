@@ -7,12 +7,18 @@
 #include "common.h"
 
 static struct Controller {
-    double max_velocity;
-    int time_tick;
+    const double max_velocity;
+    const int time_tick;
+    const double k_d_ang_vel;
     double ang_vel;
-    double k_d_ang_vel;
     double prev_direction;
-} controller;
+} controller = { .max_velocity = 100,
+                 // 17ms time tick gives up to 60fps.
+                 .time_tick = 17,
+                 .k_d_ang_vel = 0.03,
+                 .ang_vel = 0,
+                 .prev_direction = 0
+               };
 
 static double get_rad_from_deg(double deg)
 {
@@ -24,8 +30,8 @@ static double get_deg_from_rad(double rad)
     return rad * 180 / 3.14;
 }
 
-static double get_destination_angle(struct Vertex pos, struct Vertex dest) {
-
+static double get_destination_angle(struct Vertex pos, struct Vertex dest)
+{
     // Transform the vector identified by the current position and the
     // destination point into the component form <D - P>. A vector in component
     // form has the initial point at the origin of the axes.
@@ -54,8 +60,8 @@ static double get_destination_angle(struct Vertex pos, struct Vertex dest) {
  * The angular velocity (omega) model is a simple P regulator.
  * omega = kp(error).
  */
-static double get_ang_vel(struct Vertex pos, struct Vertex dest) {
-
+static double get_ang_vel(struct Vertex pos, struct Vertex dest)
+{
     double error = get_destination_angle(pos, dest) - controller.prev_direction;
     printf("angle error: %f\n", error);
 
@@ -70,20 +76,8 @@ static double get_ang_vel(struct Vertex pos, struct Vertex dest) {
     return ang_vel;
 }
 
-void init_controller() {
-
-    // Unit per second.
-    controller.max_velocity = 100;
-
-    // 17ms time tick gives up to 60fps.
-    controller.time_tick = 17;
-    controller.ang_vel = 0;
-    controller.k_d_ang_vel = 0.03;
-    controller.prev_direction = 0;
-}
-
-double get_new_angle(struct Vertex pos, struct Vertex dest) {
-
+double get_new_angle(struct Vertex pos, struct Vertex dest)
+{
     double angular_velocity = get_ang_vel(pos, dest);
 
     // Angle variation speed for this time tick.

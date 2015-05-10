@@ -122,7 +122,6 @@ int main()
                                           program.window_height);
 
     set_callbacks(main_window);
-    init_controller();
     init_robot();
 
     struct timespec timer_start;
