@@ -11,12 +11,12 @@ static struct Vertex y_axis_direction_vert[3];
 
 static struct
 {
-    double BODY_LENGTH;
-    double BODY_WIDTH;
-    double BUMPER_HEIGHT;
-    double WHEEL_BODY_OFFSET;
-    double WHEEL_WIDTH;
-    double WHEEL_LENGTH;
+    const double BODY_LENGTH;
+    const double BODY_WIDTH;
+    const double BUMPER_HEIGHT;
+    const double WHEEL_BODY_OFFSET;
+    const double WHEEL_WIDTH;
+    const double WHEEL_LENGTH;
 
     struct Vertex vert_bumper[3];
     struct Vertex vert_body[4];
