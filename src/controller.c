@@ -6,8 +6,8 @@
 #include "controller.h"
 #include "common.h"
 
-static struct Controller {
-    const double max_velocity;
+static struct {
+    const int max_velocity;
     const int time_tick;
     const double k_d_ang_vel;
     double ang_vel;
@@ -92,7 +92,7 @@ void bound_frame_time(struct timespec *elapsed_time)
     if(sleep_time > 0)
     {
         printf("Cycle usleep %ld\n", sleep_time);
-        usleep(sleep_time);
+        usleep((unsigned int)sleep_time);
     }
 }
 

@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <time.h>
+#include <stdbool.h>
 
 #define UNUSED(x) (void)x
 

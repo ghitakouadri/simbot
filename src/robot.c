@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <math.h>
 
 #include "robot.h"
 #include "common.h"
 #include "controller.h"
 
-static struct Robot
+static struct
 {
     struct Vertex destination;
     struct Vertex position;
