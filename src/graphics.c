@@ -15,12 +15,6 @@ static long round_f_to_l(float x)
     return (long)x;
 }
 
-void commit_window(GLFWwindow *window)
-{
-    glFlush();
-    glfwSwapBuffers(window);
-}
-
 void prepare_to_draw_window(GLFWwindow *window)
 {
     int length = 0;
@@ -64,27 +58,6 @@ void prepare_to_draw_window(GLFWwindow *window)
 
     // Reset all transformations.
     glLoadIdentity();
-}
-
-struct GLFWwindow* init_window(const int window_length, const int window_height)
-{
-    if(glfwInit() != GL_TRUE)
-    {
-        exit(EXIT_FAILURE);
-    }
-
-    GLFWwindow *main_window = glfwCreateWindow(window_length, window_height,
-                                               "SimBot", NULL, NULL);
-
-    if(!main_window)
-    {
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-
-    glfwMakeContextCurrent(main_window);
-
-    return main_window;
 }
 
 // TODO: add doc.

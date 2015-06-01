@@ -1,8 +1,11 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <GLFW/glfw3.h>
 
 #include "scenario.h"
 #include "graphics.h"
+#include "robot.h"
 
 static struct Vertex x_axis_vert[2];
 static struct Vertex y_axis_vert[2];
@@ -29,6 +32,19 @@ static struct
                      .WHEEL_WIDTH = 4,
                      .WHEEL_LENGTH = 6
                    };
+
+static struct
+{
+    const int window_length;
+    const int window_height;
+    struct Vertex cursor_position;
+    GLFWwindow *main_window;
+} window_state = { .window_length = 800,
+                   .window_height = 800,
+                   .cursor_position.x = 0.0,
+                   .cursor_position.y = 0.0,
+                   .main_window = NULL
+                 };
 
 static void draw_axes()
 {
@@ -191,6 +207,70 @@ static void draw_2d_cartesian_plane()
     draw_axes_directions();
 }
 
+static void window_size_callback(GLFWwindow *window, int length, int height)
+{
+    UNUSED(window);
+    set_plane_size(length, height);
+}
+
+static void error_callback(int err_code, const char* description)
+{
+    UNUSED(err_code);
+    fputs(description, stderr);
+}
+
+static void window_to_cartesian_coord(double *x, double *y)
+{
+    *x = *x - window_state.window_length / 2;
+
+    // The y coordinate is flipped because the window y coordinate grows towards
+    // decreasing cartesian y values.
+    *y = -(*y - window_state.window_height / 2);
+}
+
+static void mouse_position_callback(GLFWwindow *window, double x, double y)
+{
+    UNUSED(window);
+    window_state.cursor_position.x = x;
+    window_state.cursor_position.y = y;
+}
+
+static struct Vertex get_cursor_position()
+{
+    double x = window_state.cursor_position.x;
+    double y = window_state.cursor_position.y;
+
+    window_to_cartesian_coord(&x, &y);
+
+    struct Vertex cursor_pos = {x, y};
+
+    printf("%s: Recorded destination: x=%f y=%f\n", __func__, x, y );
+
+    return cursor_pos;
+}
+
+static void mouse_button_callback(GLFWwindow *window, int button, int action,
+                                  int mods)
+{
+    UNUSED(window);
+    UNUSED(button);
+    UNUSED(mods);
+
+    if(action == GLFW_PRESS)
+    {
+        struct Vertex cursor_pos = get_cursor_position();
+        set_robot_destination(cursor_pos);
+    }
+}
+
+static void set_callbacks(GLFWwindow *window)
+{
+    glfwSetErrorCallback(error_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetCursorPosCallback(window, mouse_position_callback);
+    glfwSetWindowSizeCallback(window, window_size_callback);
+}
+
 void init_robot()
 {
     init_bumper();
@@ -214,9 +294,52 @@ void set_plane_size(double length, double height)
     set_axes_direction_vertices(length, height);
 }
 
-void draw_window(struct GLFWwindow *window)
+void draw_window()
 {
-    prepare_to_draw_window(window);
+    prepare_to_draw_window(window_state.main_window);
     draw_2d_cartesian_plane();
+}
+
+void init_scenario()
+{
+    if(glfwInit() != GL_TRUE)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    window_state.main_window = glfwCreateWindow(window_state.window_length,
+                                                window_state.window_height,
+                                                "SimBot", NULL, NULL);
+
+    if(!window_state.main_window)
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    glfwMakeContextCurrent(window_state.main_window);
+
+    set_callbacks(window_state.main_window);
+}
+
+void commit_window()
+{
+    glFlush();
+    glfwSwapBuffers(window_state.main_window);
+}
+
+bool is_window_open()
+{
+    return glfwWindowShouldClose(window_state.main_window) == GL_FALSE;
+}
+
+void process_events()
+{
+    glfwPollEvents();
+}
+
+void terminate_window()
+{
+    glfwTerminate();
 }
 
