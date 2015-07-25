@@ -15,7 +15,7 @@ static struct {
 } controller = { .max_velocity = 100,
                  // 17ms time tick gives up to 60fps.
                  .time_tick = 17,
-                 .k_d_ang_vel = 0.03,
+                 .k_d_ang_vel = 0.09,
                  .ang_vel = 0,
                  .prev_direction = 0
                };
