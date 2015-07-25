@@ -17,12 +17,16 @@ static struct
                   .position.y = 0.0,
                   .heading = 0.0
                 };
+
 static bool is_at_destination()
 {
     double x_delta = robot_state.destination.x - robot_state.position.x;
     double y_delta = robot_state.destination.y - robot_state.position.y;
 
-    return fabs(x_delta) < 15 && fabs(y_delta) < 15 ? true : false;
+    const int DESTINATION_THRESHOLD = 15;
+
+    return fabs(x_delta) < DESTINATION_THRESHOLD
+           && fabs(y_delta) < DESTINATION_THRESHOLD ? true : false;
 }
 
 // This method updates the robot's position and heading at each time tick.
