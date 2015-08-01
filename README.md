@@ -5,11 +5,11 @@ simbot
 
     It is implemented in C with OpenGL graphic.
 
-* Prerequisites *
+* Prerequisites
 
     This project uses GLFW 3.0.4 to handle events and manage the OpenGL context.
 
-* Build instructions *
+* Build instructions
 
     - Build stripped binaries:
         make
@@ -17,7 +17,7 @@ simbot
     - Build with symbols:
         make debug
 
-* Credits *
+* Credits
 
     Credit for the control theory notions in this projects go to the
     Georgia Tech guys of the fantastic Control of Mobile Robots coursera
