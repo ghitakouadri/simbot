@@ -29,7 +29,9 @@ static bool is_at_destination()
            && fabs(y_delta) < DESTINATION_THRESHOLD ? true : false;
 }
 
-// This method updates the robot's position and heading at each time tick.
+/**
+ * Updates the robot's position and heading at each time tick.
+ */
 void update_robot_state()
 {
     printf("RSU BEGIN:\n");
@@ -41,7 +43,7 @@ void update_robot_state()
         return;
     }
 
-    struct Vertex new_pos = get_new_pos(robot_state.position,
+    struct Vertex new_pos = get_new_position(robot_state.position,
                                         robot_state.heading);
 
     robot_state.position.x = new_pos.x;

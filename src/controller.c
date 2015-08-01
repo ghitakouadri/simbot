@@ -58,35 +58,29 @@ static double get_destination_angle(struct Vertex pos, struct Vertex dest)
 
 /**
  * The angular velocity (omega) model is a simple P regulator.
- * omega = kp(error).
  */
-static double get_ang_vel(struct Vertex pos, struct Vertex dest)
+static double get_direction_delta(struct Vertex pos, struct Vertex dest)
 {
     double error = get_destination_angle(pos, dest) - controller.prev_direction;
     printf("angle error: %f\n", error);
 
     error = get_rad_from_deg(error);
 
-    // P regulator.
-    double ang_vel = controller.k_d_ang_vel * atan2(sin(error), cos(error));
+    // P regulator: omega = kp * error
+    double direction_delta = controller.k_d_ang_vel * atan2(sin(error), cos(error));
 
-    ang_vel = get_deg_from_rad(ang_vel);
-    printf("angular vel %f\n", ang_vel);
+    direction_delta = get_deg_from_rad(direction_delta);
+    printf("angular vel %f\n", direction_delta);
 
-    return ang_vel;
+    return direction_delta;
 }
 
 double get_new_angle(struct Vertex pos, struct Vertex dest)
 {
-    double angular_velocity = get_ang_vel(pos, dest);
-
-    // Angle variation speed for this time tick.
-    double incremental_ang_update = angular_velocity;
-
-    return controller.prev_direction + incremental_ang_update;
+    return controller.prev_direction + get_direction_delta(pos, dest);
 }
 
-void bound_frame_time(struct timespec *elapsed_time)
+void sleep_up_to_timetick(struct timespec *elapsed_time)
 {
     long sleep_time = controller.time_tick * 1000 - elapsed_time->tv_nsec / 1000;
     if(sleep_time > 0)
@@ -96,7 +90,7 @@ void bound_frame_time(struct timespec *elapsed_time)
     }
 }
 
-struct Vertex get_new_pos(struct Vertex pos, double heading)
+struct Vertex get_new_position(struct Vertex pos, double heading)
 {
     heading = get_rad_from_deg(heading);
 

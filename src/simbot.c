@@ -61,8 +61,7 @@ int main()
         clock_gettime(CLOCK_REALTIME, &timer_stop);
 
         struct timespec elapsed_time = get_elapsed_time(timer_start, timer_stop);
-
-        bound_frame_time(&elapsed_time);
+        sleep_up_to_timetick(&elapsed_time);
     }
 
     terminate_window();
