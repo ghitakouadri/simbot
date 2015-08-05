@@ -23,7 +23,7 @@ static bool is_at_destination()
     double x_delta = robot_state.destination.x - robot_state.position.x;
     double y_delta = robot_state.destination.y - robot_state.position.y;
 
-    const int DESTINATION_THRESHOLD = 15;
+    static const int DESTINATION_THRESHOLD = 15;
 
     return fabs(x_delta) < DESTINATION_THRESHOLD
            && fabs(y_delta) < DESTINATION_THRESHOLD ? true : false;
@@ -44,7 +44,7 @@ void update_robot_state()
     }
 
     struct Vertex new_pos = get_new_position(robot_state.position,
-                                        robot_state.heading);
+                                             robot_state.heading);
 
     robot_state.position.x = new_pos.x;
     robot_state.position.y = new_pos.y;
@@ -71,5 +71,10 @@ struct Vertex get_robot_position()
 double get_robot_heading()
 {
     return robot_state.heading;
+}
+
+struct Vertex get_robot_destination()
+{
+    return robot_state.destination;
 }
 

@@ -5,6 +5,7 @@
 
 #include "controller.h"
 #include "common.h"
+#include "robot.h"
 
 static struct {
     const int max_velocity;
@@ -15,7 +16,7 @@ static struct {
 } controller = { .max_velocity = 100,
                  // 17ms time tick gives up to 60fps.
                  .time_tick = 17,
-                 .k_d_ang_vel = 0.09,
+                 .k_d_ang_vel = 0.03,
                  .ang_vel = 0,
                  .prev_direction = 0
                };
@@ -90,20 +91,36 @@ void sleep_up_to_timetick(struct timespec *elapsed_time)
     }
 }
 
+static double get_current_velocity(struct Vertex current_pos)
+{
+    static const int PROXIMITY_THRESHOLD = 30;
+
+    // If the robot is close to the goal, reduce speed by 50%.
+    struct Vertex dest = get_robot_destination();
+    if(fabs(dest.x - current_pos.x) < PROXIMITY_THRESHOLD
+       && fabs(dest.y - current_pos.y) < PROXIMITY_THRESHOLD)
+    {
+        return controller.max_velocity * 0.5;
+    }
+
+    return controller.max_velocity;
+}
+
 struct Vertex get_new_position(struct Vertex pos, double heading)
 {
     heading = get_rad_from_deg(heading);
 
-    double tick_per_sec = 1000 / controller.time_tick;
+    static const double one_millis = 1000;
+    const double tick_per_sec = one_millis / controller.time_tick;
+
+    const double current_velocity = get_current_velocity(pos);
 
     struct Vertex new_pos;
-    new_pos.x = pos.x +
-        controller.max_velocity / tick_per_sec * cos(heading);
+    new_pos.x = pos.x + current_velocity / tick_per_sec * cos(heading);
 
-    printf("delta x %f\n", controller.max_velocity / tick_per_sec * cos(heading));
+    printf("delta x %f\n", current_velocity / tick_per_sec * cos(heading));
 
-    new_pos.y = pos.y +
-        controller.max_velocity / tick_per_sec * sin(heading);
+    new_pos.y = pos.y + current_velocity / tick_per_sec * sin(heading);
 
     printf("delta y %f\n", controller.max_velocity / tick_per_sec * sin(heading));
 

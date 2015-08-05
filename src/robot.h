@@ -29,5 +29,12 @@ struct Vertex get_robot_position(void);
  */
 double get_robot_heading(void);
 
+/**
+ * Returns the robot destination.
+ *
+ * @return the current destination of the robot.
+ */
+struct Vertex get_robot_destination(void);
+
 #endif // ~ROBOT_H
 
